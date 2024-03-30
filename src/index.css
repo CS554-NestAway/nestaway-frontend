@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Didact+Gothic&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html[data-theme="light"] {
+  --color-primary: #346210; /* Green */
+  --color-secondary: #fad02c; /* Yellow */
+  --color-tertiary: #82867e; /* Gray */
+  --color-accent1: #000; /* Black */
+  --color-accent2: #fff; /* White */
+}
+
+html[data-theme="dark"] {
+  --color-primary: #fad02c; /* Yellow */
+  --color-accent2: #000; /* black */
+  --color-accent1: #fff; /* White */
+  --color-tertiary: #82867e; /* Gray */
+  --color-secondary: #346210; /* Green */
+}
+
+:root {
+  --font-comic: "Comic Neue", sans-serif;
+  --font-didact: "Didact Gothic", sans-serif;
+}

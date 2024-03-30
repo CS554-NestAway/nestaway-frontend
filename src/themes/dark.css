@@ -1,0 +1,7 @@
+html[data-theme="dark"] {
+  --color-primary: #346210; /* Green */
+  --color-secondary: #fad02c; /* Yellow */
+  --color-tertiary: #82867e; /* Gray */
+  --color-accent1: #000; /* Black */
+  --color-accent2: #fff; /* White */
+}

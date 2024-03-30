@@ -1,0 +1,7 @@
+html[data-theme="light"] {
+  --color-primary: #fad02c; /* Yellow */
+  --color-accent2: #000; /* black */
+  --color-accent1: #fff; /* White */
+  --color-tertiary: #82867e; /* Gray */
+  --color-secondary: #346210; /* Green */
+}
