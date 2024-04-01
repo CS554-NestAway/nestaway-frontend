@@ -39,3 +39,6 @@ html[data-theme="dark"] {
 .leaflet-popup-content {
   margin: 0px;
 }
+.leaflet-popup-content-wrapper {
+  padding: 0px;
+}

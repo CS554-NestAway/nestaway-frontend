@@ -42,9 +42,9 @@ const Navbar = () => {
         <div
           className={`${
             openNavigation ? "flex" : "hidden"
-          } fixed top-[4rem] right-0 w-48 bg-accent1 shadow-shadow1 rounded-lg mr-2`}
+          } fixed top-[4rem] z-20 right-0 w-48 bg-accent1 shadow-shadow1 rounded-lg mr-2`}
         >
-          <div className="relative z-2 flex flex-col items-center justify-center w-full">
+          <div className="relative flex flex-col items-center justify-center w-full">
             <Link
               key="login"
               to="/login"

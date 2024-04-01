@@ -1,15 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import { houseData } from "./sample";
 import { Carousel } from "react-responsive-carousel";
 import axios from "axios";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Map from "./Map";
+import ThemeContext from "../contexts/ThemeContext";
 
 const Home = () => {
   const [position, setPosition] = useState({ latitude: null, longitude: null });
   const [distances, setDistances] = useState({});
   const [view, setView] = useState("map");
+  const { theme } = useContext(ThemeContext);
 
   const getDistance = async (nestLat, nestLong) => {
     const waypoints = `${position.latitude},${position.longitude}|${nestLat},${nestLong}`;
@@ -78,12 +80,12 @@ const Home = () => {
   }, [calculateDistance, position.latitude, position.longitude]);
 
   return (
-    <div className="font-didact">
+    <div className={`font-didact ${theme === "light" ? "" : "bg-black"}`}>
       {/* <div className="flex w-full h-full justify-center items-center my-4">
         <SearchBar />
       </div> */}
       {view === "list" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
           {houseData.map((house) => (
             <div
               key={house.house_id}
