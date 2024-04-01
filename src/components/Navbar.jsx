@@ -24,13 +24,19 @@ const Navbar = () => {
     theme === "light" ? changeTheme("dark") : changeTheme("light");
   };
   return (
-    <div className={`static w-full top-0 bg-primary z-50`}>
+    <div className={`static w-full shadow-shadow3 top-0 bg-accent1 z-50`}>
       <div className="flex items-center justify-between px-5 py-1">
         <Link
-          className="flex justify-center items-center font-comic font-bold w-[12rem] text-accent2 text-3xl hover:text-secondary"
+          className="  flex justify-center items-center font-comic font-bold w-[12rem] text-accent2 text-3xl hover:text-info"
           to="/"
         >
-          <img src={logo} width={70} height={40} alt="Nestaway" />
+          <img
+            className={theme === "light" ? "" : "invert"}
+            src={logo}
+            width={70}
+            height={40}
+            alt="Nestaway"
+          />
           Nestaway
         </Link>
         <div
@@ -57,21 +63,21 @@ const Navbar = () => {
         </div>
         <div className="flex gap-2">
           <Link
-            className={`flex justify-center py-2 px-4 rounded-lg items-center font-didact uppercase bg-primary transition-colors hover:text-primary ${
-              pathname?.includes("host") ? "z-10 text-primary" : "text-accent1"
-            } bg-secondary`}
+            className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+              pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+            } `}
             to="/host"
           >
             Nest your Home
           </Link>
           <button
-            className={`text-accent1 rounded-lg ml-auto px-2 bg-secondary hover:text-primary`}
+            className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
             onClick={toggleDarkTheme}
           >
             Theme
           </button>
           <button
-            className={`bg-secondary flex items-center gap-2 text-accent1 rounded-lg ml-auto px-2 hover:text-primary`}
+            className={`bg-primary flex items-center gap-2 text-accent1 rounded-lg ml-auto px-2 hover:bg-action`}
             onClick={toggleNavigation}
           >
             User
