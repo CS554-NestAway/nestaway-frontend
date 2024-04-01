@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import MenuSvg from "../assets/MenuSvg";
 import logo from "/logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { changeTheme } from "../utils/helper";
+import ThemeContext from "../contexts/ThemeContext";
 
 const Navbar = () => {
   const { pathname } = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
-  const [theme, setTheme] = useState("light");
 
-  useEffect(() => {
-    changeTheme(theme);
-  }, []);
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
   const toggleNavigation = () => {
     if (openNavigation) {
       setOpenNavigation(false);
@@ -19,10 +18,7 @@ const Navbar = () => {
       setOpenNavigation(true);
     }
   };
-  const toggleDarkTheme = () => {
-    setTheme((prevTheme) => (prevTheme == "light" ? "dark" : "light"));
-    theme === "light" ? changeTheme("dark") : changeTheme("light");
-  };
+
   return (
     <div className={`static w-full shadow-shadow3 top-0 bg-accent1 z-50`}>
       <div className="flex items-center justify-between px-5 py-1">
@@ -72,7 +68,7 @@ const Navbar = () => {
           </Link>
           <button
             className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
-            onClick={toggleDarkTheme}
+            onClick={toggleTheme}
           >
             Theme
           </button>
