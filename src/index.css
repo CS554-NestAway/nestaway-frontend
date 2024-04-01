@@ -18,7 +18,7 @@ html[data-theme="light"] {
 
 /* Dark Theme Colors */
 html[data-theme="dark"] {
-  --color-primary: #d7af5f; /* Gold */
+  --color-primary: #af87d7; /* Gold */
   --color-secondary: #808080; /* Light Gray */
   --color-tertiary: #d7875f; /* Green */
   --color-accent1: #1c1c1c; /* Black */
