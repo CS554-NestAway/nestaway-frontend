@@ -78,10 +78,10 @@ const Home = () => {
   }, [calculateDistance, position.latitude, position.longitude]);
 
   return (
-    <>
-      <div className="flex w-full h-full justify-center items-center my-4">
+    <div className="font-didact">
+      {/* <div className="flex w-full h-full justify-center items-center my-4">
         <SearchBar />
-      </div>
+      </div> */}
       {view === "list" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 px-6">
           {houseData.map((house) => (
@@ -146,7 +146,7 @@ const Home = () => {
       >
         {view === "list" ? "Map" : "List"} View
       </div>
-    </>
+    </div>
   );
 };
 

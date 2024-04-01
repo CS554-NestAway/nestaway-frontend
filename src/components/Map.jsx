@@ -1,11 +1,10 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import MarkerClusterGroup from "react-leaflet-markercluster";
 import L from "leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import { Carousel } from "react-responsive-carousel";
 import ThemeContext from "../contexts/ThemeContext";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useContext } from "react";
-import "react-leaflet-markercluster/dist/styles.min.css";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
 
@@ -36,7 +35,7 @@ const Map = ({ position, data }) => {
   return (
     <MapContainer
       zoomControl={true}
-      className="h-[82vh] rounded-lg z-10 font-didact"
+      className="h-[92vh] z-10 font-didact"
       dragging={true}
       minZoom={3}
       maxZoom={20}
@@ -52,7 +51,7 @@ const Map = ({ position, data }) => {
         attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
       />
 
-      <MarkerClusterGroup>
+      <MarkerClusterGroup chunkedLoading>
         {data.map((house) => (
           <Marker
             key={house.house_id}

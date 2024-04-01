@@ -4,6 +4,7 @@ import logo from "/logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { changeTheme } from "../utils/helper";
 import ThemeContext from "../contexts/ThemeContext";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const { pathname } = useLocation();
@@ -35,6 +36,9 @@ const Navbar = () => {
           />
           Nestaway
         </Link>
+        {/* <div className="flex justify-center items-center"> */}
+        <SearchBar />
+        {/* </div> */}
         <div
           className={`${
             openNavigation ? "flex" : "hidden"
