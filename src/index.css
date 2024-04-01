@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Didact+Gothic&display=swap");
+/* @import url("react-leaflet-markercluster/dist/styles.min.css");
+@import url("leaflet/dist/leaflet.css"); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,4 +34,11 @@ html[data-theme="dark"] {
 :root {
   --font-comic: "Comic Neue", sans-serif;
   --font-didact: "Didact Gothic", sans-serif;
+}
+
+.leaflet-popup-content {
+  margin: 0px;
+}
+.leaflet-popup-content-wrapper {
+  padding: 0px;
 }
