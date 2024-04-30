@@ -56,9 +56,6 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
     if (loading) {
         return (<p>Loading...</p>);
     }
-    if (error) {
-        return (<>{error}</>)
-    }
 
     const changePaidState = () => {
         setPaid(true);
@@ -77,9 +74,14 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
             userId: "6621fca003f8cbabbabc287e",
             paymentMethod: paymentInfo.paymentMethod,
         }
-        const addedBooking = await axios.post('http://localhost:8080/booking/addBooking', bookingInfo);
-        if (addedBooking.data.success) {
-            navigateTo('/');
+        try {
+            const addedBooking = await axios.post('http://localhost:8080/booking/addBooking', bookingInfo);
+            if (addedBooking.data.success) {
+                navigateTo('/');
+            }
+        } catch (e) {
+            console.log(e.response.data.error);
+            setError(e.response.data.error);
         }
     };
 
@@ -108,13 +110,19 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                         <button
                             onClick={onClickComfirm}
                             className={`mt-4 inline-flex w-full items-center justify-center rounded py-2.5 px-4 text-base font-semibold tracking-wide text-white text-opacity-80 outline-none ring-offset-2 transition hover:text-opacity-100 focus:ring-2 ${!paid
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-teal-600 hover:bg-teal-700 focus:bg-teal-500 focus:ring-teal-500'
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-teal-600 hover:bg-teal-700 focus:bg-teal-500 focus:ring-teal-500'
                                 }`}
                             disabled={!paid}
                         >
                             Confirm and Pay
                         </button>
+                        {error &&
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <strong className="font-bold">Error:</strong>
+                                <span className="block sm:inline">{error}</span>
+                            </div>
+                        }
                     </div>
                 </div>
 
