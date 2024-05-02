@@ -85,6 +85,7 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+      <div className="border-b border-accent2 w-full"></div>
     </div>
   );
 };
