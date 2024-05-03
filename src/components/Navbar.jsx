@@ -10,7 +10,7 @@ const Navbar = () => {
   const { pathname } = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme, searchVisible } = useContext(ThemeContext);
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -37,7 +37,7 @@ const Navbar = () => {
           Nestaway
         </Link>
         {/* <div className="flex justify-center items-center"> */}
-        <SearchBar />
+        {searchVisible && <SearchBar />}
         {/* </div> */}
         <div
           className={`${

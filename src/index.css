@@ -1,9 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Didact+Gothic&display=swap");
 /* @import url("react-leaflet-markercluster/dist/styles.min.css");
 @import url("leaflet/dist/leaflet.css"); */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+/* IMPORTANT: In "styled" mode you must add the PrimeReact Theme here. Do NOT include in "unstyled" mode */
+@import "primereact/resources/themes/lara-light-blue/theme.css"
+  layer(primereact);
+
+@layer tailwind-base, primereact, tailwind-utilities;
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
 
 /* Light Theme Colors */
 html[data-theme="light"] {
@@ -41,4 +52,13 @@ html[data-theme="dark"] {
 }
 .leaflet-popup-content-wrapper {
   padding: 0px;
+}
+
+.p-stepper-number {
+  @apply bg-primary text-accent1;
+}
+
+.p-icon,
+.p-dialog-header-close-icon {
+  @apply text-accent2;
 }

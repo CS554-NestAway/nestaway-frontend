@@ -1,11 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import ThemeContext from "../../contexts/ThemeContext";
 import { houseData } from "../sample";
 import { Carousel } from "react-responsive-carousel";
 import { ButtonGroup } from "./ButtonGroup";
+import ListingWizard from "./ListingWizard";
 
 const Host = () => {
   const { theme } = useContext(ThemeContext);
+  const [wizardVisible, setWizardVisible] = useState(false);
+  const [wizardMode, setWizardMode] = useState("add");
+
+  const { toggleSearchVisible } = useContext(ThemeContext);
 
   const listingButtons = [
     { name: "allListings", label: "All Listings" },
@@ -16,9 +21,31 @@ const Host = () => {
 
   const [activeButton, setActiveButton] = useState(listingButtons[0].name);
 
-  const handleButtonClick = (buttonName) => {
+  const handleButtonClick = useCallback((buttonName) => {
     setActiveButton(buttonName);
-  };
+  }, []);
+
+  const handleAddListing = useCallback(() => {
+    setWizardVisible(true);
+    setWizardMode("add");
+  }, []);
+
+  const handleUpdateListing = useCallback(() => {
+    setWizardVisible(true);
+    setWizardMode("update");
+  }, []);
+
+  const handleCloseWizard = useCallback(() => {
+    setWizardVisible(false);
+  }, []);
+
+  useEffect(() => {
+    toggleSearchVisible(false);
+
+    return () => {
+      toggleSearchVisible(true);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col w-full h-screen px-20 py-4 font-didact gap-4 bg-accent1 text-accent2">
@@ -28,7 +55,7 @@ const Host = () => {
         </p>
         <button
           className={`text-primary rounded-lg ml-auto p-2 border-2 border-primary  hover:bg-primary hover:text-accent1`}
-          // onClick={toggleTheme}
+          onClick={handleAddListing}
         >
           Add New Listing
         </button>
@@ -48,6 +75,7 @@ const Host = () => {
             <div
               key={house.house_id}
               className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer w-60"
+              onClick={() => handleUpdateListing()}
             >
               <Carousel
                 showThumbs={false}
@@ -79,6 +107,11 @@ const Host = () => {
           ))}
         </div>
       </div>
+      <ListingWizard
+        active={wizardVisible}
+        mode={wizardMode}
+        onClose={handleCloseWizard}
+      />
     </div>
   );
 };
