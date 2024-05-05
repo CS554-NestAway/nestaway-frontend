@@ -1,16 +1,45 @@
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { Dropdown } from "primereact/dropdown";
 
 const ListingWizard = ({ active, mode, onClose }) => {
   const stepperRef = useRef(null);
-  const stepOne = () => <div>Step One</div>;
+  const [houseType, setHouseType] = useState("");
+  const [houseAddress, setHouseAddress] = useState("");
+  const stepOne = () => (
+    <div className="flex-col">
+      <Dropdown
+        value={houseType}
+        options={[
+          "Home",
+          "Apartment",
+          "Condo",
+          "Townhouse",
+          "Duplex",
+          "Mobile Home",
+          "Cabin",
+          "Loft",
+          "Studio",
+          "Other",
+        ]}
+        onChange={(e) => setHouseType(e.value)}
+        placeholder="Select House Type"
+      />
+      <input
+        type="text"
+        value={houseAddress}
+        onChange={(e) => setHouseAddress(e.target.value)}
+        placeholder="Enter House Address"
+      />
+    </div>
+  );
   const stepTwo = () => <div>Step Two</div>;
   const steps = [
     {
-      header: "HouseStructure",
+      header: "House Details",
       body: stepOne(),
       hasNextStep: true,
       hasPreviousStep: true,
@@ -36,7 +65,7 @@ const ListingWizard = ({ active, mode, onClose }) => {
           steps.map((step) => (
             <StepperPanel key={step.header} header={step.header}>
               <div className="flex flex-column h-12rem">
-                <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+                <div className="flex-auto flex justify-center items-center font-medium">
                   {step.body}
                 </div>
               </div>

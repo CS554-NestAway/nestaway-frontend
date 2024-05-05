@@ -7,7 +7,7 @@ import ListingWizard from "./ListingWizard";
 
 const Host = () => {
   const { theme } = useContext(ThemeContext);
-  const [wizardVisible, setWizardVisible] = useState(false);
+  const [wizardVisible, setWizardVisible] = useState(true);
   const [wizardMode, setWizardMode] = useState("add");
 
   const { toggleSearchVisible } = useContext(ThemeContext);
