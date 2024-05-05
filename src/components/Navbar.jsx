@@ -4,6 +4,8 @@ import logo from "/logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { changeTheme } from "../utils/helper";
 import ThemeContext from "../contexts/ThemeContext";
+import { AuthContext } from "../contexts/AuthContext";
+import SignOut from "./SignOut";
 import SearchBar from "./SearchBar";
 
 const Navbar = () => {
@@ -19,26 +21,33 @@ const Navbar = () => {
       setOpenNavigation(true);
     }
   };
-
-  return (
-    <div className={`static w-full shadow-shadow3 top-0 bg-accent1 z-50`}>
-      <div className="flex items-center justify-between px-5 py-1">
+  const { currentUser } = useContext(AuthContext);
+  const NavigationAuth = () => (
+    <>
+      {searchVisible && <SearchBar />}
+      <div className="flex gap-2">
         <Link
-          className="  flex justify-center items-center font-comic font-bold w-[12rem] text-accent2 text-3xl hover:text-info"
-          to="/"
+          className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+            pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+          } `}
+          to="/host"
         >
-          <img
-            className={theme === "light" ? "" : "invert"}
-            src={logo}
-            width={70}
-            height={40}
-            alt="Nestaway"
-          />
-          Nestaway
+          Nest your Home
         </Link>
-        {/* <div className="flex justify-center items-center"> */}
-        {searchVisible && <SearchBar />}
-        {/* </div> */}
+        <button
+          className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
+          onClick={toggleTheme}
+        >
+          Theme
+        </button>
+        <SignOut />
+      </div>
+    </>
+  );
+
+  const NavigationNonAuth = () => {
+    return (
+      <div>
         <div
           className={`${
             openNavigation ? "flex" : "hidden"
@@ -85,6 +94,29 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+    );
+  };
+  return (
+    <div className={`static w-full shadow-shadow3 top-0 bg-accent1 z-50`}>
+      <div className="flex items-center justify-between px-5 py-1">
+        <Link
+          className="  flex justify-center items-center font-comic font-bold w-[12rem] text-accent2 text-3xl hover:text-info"
+          to="/"
+        >
+          <img
+            className={theme === "light" ? "" : "invert"}
+            src={logo}
+            width={70}
+            height={40}
+            alt="Nestaway"
+          />
+          Nestaway
+        </Link>
+        <div className="flex gap-2">
+          {currentUser ? <NavigationAuth /> : <NavigationNonAuth />}
+        </div>
+      </div>
+
       <div className="border-b border-accent2 w-full"></div>
     </div>
   );
