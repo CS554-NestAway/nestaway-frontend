@@ -4,9 +4,11 @@ import { houseData } from "../sample";
 import { Carousel } from "react-responsive-carousel";
 import { ButtonGroup } from "./ButtonGroup";
 import ListingWizard from "./ListingWizard";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Host = () => {
   const { theme } = useContext(ThemeContext);
+  const { currentUser } = useContext(AuthContext);
   const [wizardVisible, setWizardVisible] = useState(true);
   const [wizardMode, setWizardMode] = useState("add");
 
@@ -48,10 +50,14 @@ const Host = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full h-screen px-20 py-4 font-didact gap-4 bg-accent1 text-accent2">
+    <div
+      className={`flex flex-col w-full h-screen px-20 py-4 font-didact gap-4 bg-accent1 text-accent2 ${
+        wizardVisible ? "overflow-hidden" : "overflow-auto"
+      }`}
+    >
       <div className="flex w-full justify-between">
         <p className="text-xl">
-          Welcome, <span className="font-bold">User</span>
+          Welcome, <span className="font-bold">{currentUser?.displayName}</span>
         </p>
         <button
           className={`text-primary rounded-lg ml-auto p-2 border-2 border-primary  hover:bg-primary hover:text-accent1`}

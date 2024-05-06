@@ -4,7 +4,7 @@ import { houseData } from "./sample";
 import { Carousel } from "react-responsive-carousel";
 import axios from "axios";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import Map from "./Map";
+import Geoview from "./Geoview";
 import ThemeContext from "../contexts/ThemeContext";
 
 const Home = () => {
@@ -134,7 +134,7 @@ const Home = () => {
       ) : (
         <div className="h-full">
           {position.latitude && position.longitude && (
-            <Map
+            <Geoview
               data={houseData}
               position={[position.latitude, position.longitude]}
             />
@@ -146,7 +146,7 @@ const Home = () => {
         className="fixed bottom-10 z-50 left-0 right-0 mx-auto bg-primary text-accent1 py-2 px-4 rounded-3xl shadow-shadow1 flex justify-center items-center max-w-fit cursor-pointer hover:bg-action"
         onClick={() => setView(view === "list" ? "map" : "list")}
       >
-        {view === "list" ? "Map" : "List"} View
+        {view === "list" ? "Geoview" : "List"} View
       </div>
     </div>
   );

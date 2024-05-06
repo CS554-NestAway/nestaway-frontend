@@ -23,31 +23,50 @@ const Navbar = () => {
   };
   const { currentUser } = useContext(AuthContext);
   const NavigationAuth = () => (
-    <>
-      {searchVisible && <SearchBar />}
-      <div className="flex gap-2">
-        <Link
-          className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
-            pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
-          } `}
-          to="/host"
-        >
-          Nest your Home
-        </Link>
-        <button
-          className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
-          onClick={toggleTheme}
-        >
-          Theme
-        </button>
-        <SignOut />
+    <div className="flex gap-2">
+      <div
+        className={`${
+          openNavigation ? "flex" : "hidden"
+        } fixed top-[4rem] z-20 right-0 w-48 bg-accent1 shadow-shadow1 rounded-lg mr-2`}
+      >
+        <div className="relative flex flex-col items-center justify-center w-full">
+          <Link
+            key="login"
+            to="/login"
+            className={`block relative font-didact text-accent2 transition-colors hover:bg-secondary px-6 py-2 w-full`}
+          >
+            Login
+          </Link>
+          <SignOut />
+        </div>
       </div>
-    </>
+      <Link
+        className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+          pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+        } `}
+        to="/host"
+      >
+        Nest your Home
+      </Link>
+      <button
+        className={`text-accent1 rounded-lg ml-auto px-2 bg-primary py-2 hover:bg-action`}
+        onClick={toggleTheme}
+      >
+        Theme
+      </button>
+      <button
+        className={`bg-primary flex items-center gap-2 text-accent1 rounded-lg ml-auto px-2 py-2 hover:bg-action`}
+        onClick={toggleNavigation}
+      >
+        {currentUser.displayName}
+        <MenuSvg openNavigation={openNavigation} />
+      </button>
+    </div>
   );
 
   const NavigationNonAuth = () => {
     return (
-      <div>
+      <div className="flex gap-2">
         <div
           className={`${
             openNavigation ? "flex" : "hidden"
@@ -71,25 +90,17 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Link
-            className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
-              pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
-            } `}
-            to="/host"
-          >
-            Nest your Home
-          </Link>
           <button
-            className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
+            className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
             onClick={toggleTheme}
           >
             Theme
           </button>
           <button
-            className={`bg-primary flex items-center gap-2 text-accent1 rounded-lg ml-auto px-2 hover:bg-action`}
+            className={`bg-primary flex items-center gap-2 text-accent1 rounded-lg ml-auto px-2 py-2 hover:bg-action`}
             onClick={toggleNavigation}
           >
-            User
+            {currentUser ? currentUser.displayName : ""}
             <MenuSvg openNavigation={openNavigation} />
           </button>
         </div>
@@ -112,11 +123,9 @@ const Navbar = () => {
           />
           Nestaway
         </Link>
-        <div className="flex gap-2">
-          {currentUser ? <NavigationAuth /> : <NavigationNonAuth />}
-        </div>
+        {searchVisible && <SearchBar />}
+        {currentUser ? <NavigationAuth /> : <NavigationNonAuth />}
       </div>
-
       <div className="border-b border-accent2 w-full"></div>
     </div>
   );

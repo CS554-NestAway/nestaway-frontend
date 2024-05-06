@@ -62,3 +62,22 @@ html[data-theme="dark"] {
 .p-dialog-header-close-icon {
   @apply text-accent2;
 }
+
+.p-dialog-content,
+.p-dialog-header,
+.p-stepper-panels,
+.p-autocomplete-item {
+  @apply bg-accent1 text-accent2;
+}
+.p-autocomplete-item:hover {
+  @apply bg-action text-accent1;
+}
+.p-stepper-action > .p-stepper-title {
+  @apply text-action;
+}
+.p-inputtext {
+  @apply text-accent2;
+}
+.p-inputtext::placeholder {
+  @apply text-accent2;
+}

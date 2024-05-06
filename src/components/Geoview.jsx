@@ -8,7 +8,7 @@ import { useContext } from "react";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
 
-const Map = ({ position, data }) => {
+const Geoview = ({ position, data }) => {
   const { theme } = useContext(ThemeContext);
 
   const markerSize = 30;
@@ -100,4 +100,4 @@ const Map = ({ position, data }) => {
   );
 };
 
-export default Map;
+export default Geoview;
