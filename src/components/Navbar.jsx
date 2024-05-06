@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { changeTheme } from "../utils/helper";
 import ThemeContext from "../contexts/ThemeContext";
 import { AuthContext } from "../contexts/AuthContext";
-import SignOut from "./SignOut";
+import UserAccount from "./UserAccount";
 import SearchBar from "./SearchBar";
 
 const Navbar = () => {
@@ -22,47 +22,39 @@ const Navbar = () => {
     }
   };
   const { currentUser } = useContext(AuthContext);
-  const NavigationAuth = () => (
-    <div className="flex gap-2">
-      <div
-        className={`${
-          openNavigation ? "flex" : "hidden"
-        } fixed top-[4rem] z-20 right-0 w-48 bg-accent1 shadow-shadow1 rounded-lg mr-2`}
-      >
-        <div className="relative flex flex-col items-center justify-center w-full">
+  const NavigationAuth = () => {
+    const [showUserAccount, setShowUserAccount] = useState(false);
+
+    const toggleUserAccount = () => {
+      setShowUserAccount(!showUserAccount);
+    };
+
+    return (
+      <>
+        <div className="flex gap-2">
           <Link
-            key="login"
-            to="/login"
-            className={`block relative font-didact text-accent2 transition-colors hover:bg-secondary px-6 py-2 w-full`}
+            className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+              pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+            } `}
+            to="/host"
           >
-            Login
+            Nest your Home
           </Link>
-          <SignOut />
+          <Link
+            className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
+            to="/account"
+          >
+            Account
+          </Link>
         </div>
-      </div>
-      <Link
-        className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
-          pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
-        } `}
-        to="/host"
-      >
-        Nest your Home
-      </Link>
-      <button
-        className={`text-accent1 rounded-lg ml-auto px-2 bg-primary py-2 hover:bg-action`}
-        onClick={toggleTheme}
-      >
-        Theme
-      </button>
-      <button
-        className={`bg-primary flex items-center gap-2 text-accent1 rounded-lg ml-auto px-2 py-2 hover:bg-action`}
-        onClick={toggleNavigation}
-      >
-        {currentUser.displayName}
-        <MenuSvg openNavigation={openNavigation} />
-      </button>
-    </div>
-  );
+        {showUserAccount && (
+          <div className="absolute top-[4rem] right-0 w-[20rem] bg-white shadow-md rounded-md">
+            <UserAccount />
+          </div>
+        )}
+      </>
+    );
+  };
 
   const NavigationNonAuth = () => {
     return (

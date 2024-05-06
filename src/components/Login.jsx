@@ -72,7 +72,7 @@ function Login() {
           <button className='button' type='submit'>
             Log in
           </button>
-
+          <br></br>
           <button className='forgotPassword' onClick={passwordReset}>
             Forgot Password
           </button>

@@ -8,7 +8,7 @@ import "primeicons/primeicons.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
-import Landing from "./components/Landing";
+import UserAccount from "./components/UserAccount";
 import { NotificationProvider } from "./contexts/NotificationContext";
 
 const App = () => {
@@ -23,7 +23,7 @@ const App = () => {
               <Route path="/host" element={<Host />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/landing" element={<Landing />} />
+              <Route path="/account" element={<UserAccount />} />
             </Routes>
           </Router>
         </NotificationProvider>
