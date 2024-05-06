@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import ThemeContext from "../../contexts/ThemeContext";
 import { houseData } from "../sample";
 import { Carousel } from "react-responsive-carousel";
@@ -7,10 +7,9 @@ import ListingWizard from "./ListingWizard";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const Host = () => {
-  const { theme } = useContext(ThemeContext);
   const { currentUser } = useContext(AuthContext);
-  const [wizardVisible, setWizardVisible] = useState(true);
-  const [wizardMode, setWizardMode] = useState("add");
+  const [wizardVisible, setWizardVisible] = useState(false);
+  const [wizardMode, setWizardMode] = useState("Add Listing");
 
   const { toggleSearchVisible } = useContext(ThemeContext);
 
@@ -29,12 +28,12 @@ const Host = () => {
 
   const handleAddListing = useCallback(() => {
     setWizardVisible(true);
-    setWizardMode("add");
+    setWizardMode("Add Listing");
   }, []);
 
   const handleUpdateListing = useCallback(() => {
     setWizardVisible(true);
-    setWizardMode("update");
+    setWizardMode("Update Listing");
   }, []);
 
   const handleCloseWizard = useCallback(() => {

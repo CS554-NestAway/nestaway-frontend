@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import SearchBar from "./SearchBar";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { houseData } from "./sample";
 import { Carousel } from "react-responsive-carousel";
 import axios from "axios";

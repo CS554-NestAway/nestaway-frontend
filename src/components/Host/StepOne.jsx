@@ -1,72 +1,19 @@
-import home from "/home.png";
-import apartment from "/apartment.png";
-import condo from "/condo.png";
-import duplex from "/duplex.png";
-import mobile from "/mobile.png";
-import cabin from "/cabin.png";
-import loft from "/loft.png";
-import townhouse from "/residence.png";
-import studio from "/studio.png";
-import others from "/jungle.png";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import ThemeContext from "../../contexts/ThemeContext";
 import Map from "./Map";
 import axios from "axios";
 import PropTypes from "prop-types";
-
-const houseTypes = [
-  {
-    type: "Home",
-    icon: home,
-  },
-  {
-    type: "Apartment",
-    icon: apartment,
-  },
-  {
-    type: "Condo",
-    icon: condo,
-  },
-  {
-    type: "Townhouse",
-    icon: townhouse,
-  },
-  {
-    type: "Duplex",
-    icon: duplex,
-  },
-  {
-    type: "Mobile Home",
-    icon: mobile,
-  },
-  {
-    type: "Cabin",
-    icon: cabin,
-  },
-  {
-    type: "Loft",
-    icon: loft,
-  },
-  {
-    type: "Studio",
-    icon: studio,
-  },
-  {
-    type: "Others",
-    icon: others,
-  },
-];
+import { houseTypes } from "../../constants";
 
 const StepOne = ({
   houseType,
   setHouseType,
   houseAddress,
   setHouseAddress,
-  addressOptions,
-  setAddressOptions,
 }) => {
   const { theme } = useContext(ThemeContext);
+  const [addressOptions, setAddressOptions] = useState([]);
 
   const fetchAddress = useCallback(
     async (query) => {
@@ -98,6 +45,12 @@ const StepOne = ({
     </span>
   );
 
+  useEffect(() => {
+    return () => {
+      setAddressOptions([]);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col space-y-4 w-full">
       <div className="flex items-center">
@@ -111,7 +64,9 @@ const StepOne = ({
                   ? "bg-primary text-accent1"
                   : "bg-accent1"
               }`}
-              onClick={() => setHouseType(house.type)}
+              onClick={() => {
+                setHouseType(house.type);
+              }}
             >
               <img
                 className={`${
@@ -128,7 +83,7 @@ const StepOne = ({
                 height={30}
                 alt="logo"
               />
-              <div className="text-xl ml-4">{house.type}</div>
+              <div className="ml-4">{house.type}</div>
             </div>
           ))}
         </div>
@@ -194,13 +149,9 @@ const StepOne = ({
 StepOne.propTypes = {
   houseType: PropTypes.string.isRequired,
   setHouseType: PropTypes.func.isRequired,
-  houseAddress: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object, // Assuming houseAddress can be either string or object
-  ]).isRequired,
+  houseAddress: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+    .isRequired,
   setHouseAddress: PropTypes.func.isRequired,
-  addressOptions: PropTypes.array.isRequired,
-  setAddressOptions: PropTypes.func.isRequired,
 };
 
 export default StepOne;
