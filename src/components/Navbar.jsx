@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import MenuSvg from "../assets/MenuSvg";
 import logo from "/logo.png";
 import { Link, useLocation } from "react-router-dom";
-import { changeTheme } from "../utils/helper";
 import ThemeContext from "../contexts/ThemeContext";
 import { AuthContext } from "../contexts/AuthContext";
 import UserAccount from "./UserAccount";
