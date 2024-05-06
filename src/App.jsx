@@ -5,7 +5,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login"; 
-import Landing from "./components/Landing";
+import UserAccount from "./components/UserAccount";
 
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/landing" element={<Landing />} />
+          <Route path="/account" element={<UserAccount />} />
         </Routes>
       </Router>
       </AuthProvider>

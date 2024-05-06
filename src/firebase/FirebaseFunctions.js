@@ -12,7 +12,6 @@ import {
     reauthenticateWithCredential
   } from 'firebase/auth';
   import axios from 'axios'
-  import {useSelector, useDispatch} from 'react-redux';
   
   async function doCreateUserWithEmailAndPassword(email, password, displayName) {
     const auth = getAuth();
@@ -45,14 +44,20 @@ import {
         console.error("Error posting user data:", error.message);
     }
 }
+async function updateUserProfile(displayName) {
+  const auth = getAuth();
 
+  try {
+    await updateProfile(auth.currentUser, { displayName});
+  } catch (error) {
+    console.error("Error creating user:", error.message);
+  }
+}
 
   async function doChangePassword(email, oldPassword, newPassword) {
     const auth = getAuth();
     let credential = EmailAuthProvider.credential(email, oldPassword);
-    console.log(credential);
     await reauthenticateWithCredential(auth.currentUser, credential);
-  
     await updatePassword(auth.currentUser, newPassword);
     await doSignOut();
   }
@@ -84,5 +89,6 @@ import {
     doSignInWithEmailAndPassword,
     doPasswordReset,
     doSignOut,
-    doChangePassword
+    doChangePassword,
+    updateUserProfile
   };
