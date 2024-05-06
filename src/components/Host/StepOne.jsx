@@ -12,6 +12,7 @@ const StepOne = ({
   houseAddress,
   setHouseAddress,
 }) => {
+  console.log(houseType, houseAddress);
   const { theme } = useContext(ThemeContext);
   const [addressOptions, setAddressOptions] = useState([]);
 
@@ -135,10 +136,20 @@ const StepOne = ({
                 {houseAddress.country}
               </p>
             </div>
-            <Map
-              street={houseAddress.address_line1}
-              position={[houseAddress.lat, houseAddress.lon]}
-            />
+            {houseAddress.lat && houseAddress.lon ? (
+              <Map
+                street={houseAddress.address_line1}
+                position={[houseAddress.lat, houseAddress.lon]}
+              />
+            ) : (
+              <Map
+                street={houseAddress?.address_line1}
+                position={[
+                  houseAddress?.location.coordinates[1],
+                  houseAddress?.location.coordinates[0],
+                ]}
+              />
+            )}
           </>
         )}
       </div>

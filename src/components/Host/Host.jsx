@@ -1,15 +1,24 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import ThemeContext from "../../contexts/ThemeContext";
-import { houseData } from "../sample";
 import { Carousel } from "react-responsive-carousel";
 import { ButtonGroup } from "./ButtonGroup";
 import ListingWizard from "./ListingWizard";
 import { AuthContext } from "../../contexts/AuthContext";
+import axios from "axios";
+import {
+  initialAmenities,
+  initialDetails,
+  initialFeatures,
+  initialPolicies,
+  initialRules,
+} from "../../constants";
 
 const Host = () => {
   const { currentUser } = useContext(AuthContext);
   const [wizardVisible, setWizardVisible] = useState(false);
-  const [wizardMode, setWizardMode] = useState("Add Listing");
+  const [houseData, setHouseData] = useState([]);
+  const [houseDetails, setHouseDetails] = useState(null);
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
 
   const { toggleSearchVisible } = useContext(ThemeContext);
 
@@ -28,21 +37,45 @@ const Host = () => {
 
   const handleAddListing = useCallback(() => {
     setWizardVisible(true);
-    setWizardMode("Add Listing");
+    setIsUpdateMode(false);
   }, []);
 
-  const handleUpdateListing = useCallback(() => {
-    setWizardVisible(true);
-    setWizardMode("Update Listing");
+  const handleUpdateListing = useCallback((id) => {
+    axios
+      .get("http://localhost:8080/host/" + id)
+      .then((response) => {
+        setHouseDetails(response.data);
+        setWizardVisible(true);
+        setIsUpdateMode(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   const handleCloseWizard = useCallback(() => {
     setWizardVisible(false);
+    setHouseDetails(null);
+    axios
+      .get("http://localhost:8080/host")
+      .then((response) => {
+        setHouseData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   useEffect(() => {
     toggleSearchVisible(false);
-
+    axios
+      .get("http://localhost:8080/host")
+      .then((response) => {
+        setHouseData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     return () => {
       toggleSearchVisible(true);
     };
@@ -75,12 +108,12 @@ const Host = () => {
           />
         </div>
         <div className="border-b border-accent2 w-full"></div>
-        <div className="flex gap-4">
-          {houseData.slice(0, 2).map((house) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-6">
+          {houseData.map((house) => (
             <div
-              key={house.house_id}
+              key={house._id}
               className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer w-60"
-              onClick={() => handleUpdateListing()}
+              onClick={() => handleUpdateListing(house._id)}
             >
               <Carousel
                 showThumbs={false}
@@ -91,10 +124,11 @@ const Host = () => {
                 interval={5000}
                 className="max-w-screen-lg"
               >
-                {house.photo &&
-                  house.photo.map((photo, index) => (
+                {house.photos &&
+                  house.photos.images &&
+                  house.photos.images.map((photo, index) => (
                     <img
-                      key={house.house_id + index}
+                      key={house._id + index}
                       src={photo}
                       alt={house.title}
                       className="w-full h-40 object-cover object-center"
@@ -104,9 +138,11 @@ const Host = () => {
               <div className="p-4 text-accent2">
                 <h3 className="text-lg font-semibold mb-2">{house.title}</h3>
                 <p className="text-accent2 mb-2">
-                  Price per night: ${house.price_per_night}
+                  Price per night: ${house.price}
                 </p>
-                <p className="text-accent2 mb-2">Location: {house.location}</p>
+                <p className="text-accent2 mb-2">
+                  Location: {house.address.address_line1}
+                </p>
               </div>
             </div>
           ))}
@@ -114,8 +150,31 @@ const Host = () => {
       </div>
       <ListingWizard
         active={wizardVisible}
-        mode={wizardMode}
+        mode={isUpdateMode}
         onClose={handleCloseWizard}
+        houseDetails={{
+          _id: houseDetails ? houseDetails._id : null,
+          houseType: houseDetails ? houseDetails.houseType : "",
+          houseAddress: houseDetails ? houseDetails.address : "",
+          photos: houseDetails
+            ? houseDetails.photos
+            : {
+                main: "",
+                images: [],
+              },
+
+          features: houseDetails ? houseDetails.features : initialFeatures,
+          amenities: houseDetails ? houseDetails.amenities : initialAmenities,
+          details: houseDetails
+            ? {
+                title: houseDetails.title,
+                description: houseDetails.description,
+                price: houseDetails.price,
+              }
+            : initialDetails,
+          policies: houseDetails ? houseDetails.settings : initialPolicies,
+          rules: houseDetails ? houseDetails.rules : initialRules,
+        }}
       />
     </div>
   );

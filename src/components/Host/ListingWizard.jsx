@@ -1,6 +1,6 @@
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import StepOne from "./StepOne";
@@ -9,29 +9,20 @@ import StepThree from "./StepThree";
 import StepFour from "./StepFour";
 import StepFive from "./StepFive";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import {
-  initialFeatures,
-  initialAmenities,
-  initialDetails,
-  initialPolicies,
-  initialRules,
-  validHouseTypes,
-} from "../../constants";
+import { validHouseTypes } from "../../constants";
 import PropTypes from "prop-types";
 
-const ListingWizard = ({ active, mode, onClose }) => {
+const ListingWizard = ({ active, mode, onClose, houseDetails }) => {
+  console.log(mode);
   const stepperRef = useRef(null);
-  const [houseType, setHouseType] = useState("");
-  const [houseAddress, setHouseAddress] = useState("");
-  const [photos, setPhotos] = useState({
-    main: "",
-    images: [],
-  });
-  const [features, setFeatures] = useState(initialFeatures);
-  const [amenities, setAmenities] = useState(initialAmenities);
-  const [details, setDetails] = useState(initialDetails);
-  const [policies, setPolicies] = useState(initialPolicies);
-  const [rules, setRules] = useState(initialRules);
+  const [houseType, setHouseType] = useState(houseDetails.houseType);
+  const [houseAddress, setHouseAddress] = useState(houseDetails.houseAddress);
+  const [photos, setPhotos] = useState(houseDetails.photos);
+  const [features, setFeatures] = useState(houseDetails.features);
+  const [amenities, setAmenities] = useState(houseDetails.amenities);
+  const [details, setDetails] = useState(houseDetails.details);
+  const [policies, setPolicies] = useState(houseDetails.policies);
+  const [rules, setRules] = useState(houseDetails.rules);
 
   const handleFeatureChange = (feature, value) => {
     setFeatures((prevFeatures) => ({
@@ -84,18 +75,25 @@ const ListingWizard = ({ active, mode, onClose }) => {
 
   const accept = useCallback(() => {
     onClose();
-    setHouseType("");
-    setHouseAddress("");
-    setPhotos({
-      main: "",
-      images: [],
-    });
-    setFeatures(initialFeatures);
-    setAmenities(initialAmenities);
-    setDetails(initialDetails);
-    setPolicies(initialPolicies);
-    setRules(initialRules);
-  }, [onClose]);
+    setHouseType(houseDetails.houseType);
+    setHouseAddress(houseDetails.houseAddress);
+    setPhotos(houseDetails.photos);
+    setFeatures(houseDetails.features);
+    setAmenities(houseDetails.amenities);
+    setDetails(houseDetails.details);
+    setPolicies(houseDetails.policies);
+    setRules(houseDetails.rules);
+  }, [
+    houseDetails.amenities,
+    houseDetails.details,
+    houseDetails.features,
+    houseDetails.houseAddress,
+    houseDetails.houseType,
+    houseDetails.photos,
+    houseDetails.policies,
+    houseDetails.rules,
+    onClose,
+  ]);
 
   const reject = () => {};
 
@@ -171,7 +169,9 @@ const ListingWizard = ({ active, mode, onClose }) => {
       body: (
         <StepFive
           accept={accept}
+          mode={mode}
           house={{
+            _id: houseDetails._id,
             houseType,
             photos,
             title: details.title,
@@ -209,9 +209,29 @@ const ListingWizard = ({ active, mode, onClose }) => {
     },
   ];
 
+  useEffect(() => {
+    setHouseType(houseDetails.houseType);
+    setHouseAddress(houseDetails.houseAddress);
+    setPhotos(houseDetails.photos);
+    setFeatures(houseDetails.features);
+    setAmenities(houseDetails.amenities);
+    setDetails(houseDetails.details);
+    setPolicies(houseDetails.policies);
+    setRules(houseDetails.rules);
+  }, [
+    houseDetails.amenities,
+    houseDetails.details,
+    houseDetails.features,
+    houseDetails.houseAddress,
+    houseDetails.houseType,
+    houseDetails.photos,
+    houseDetails.policies,
+    houseDetails.rules,
+  ]);
+
   return (
     <Dialog
-      header={mode}
+      header={mode ? "Update Listing" : "Add Listing"}
       visible={active}
       style={{ width: "85vw", height: "85vh" }}
       onHide={() => handleClose()}
@@ -265,8 +285,49 @@ const ListingWizard = ({ active, mode, onClose }) => {
 
 ListingWizard.propTypes = {
   active: PropTypes.bool.isRequired,
-  mode: PropTypes.string.isRequired,
+  mode: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  houseDetails: PropTypes.shape({
+    _id: PropTypes.string,
+    houseType: PropTypes.string.isRequired,
+    houseAddress: PropTypes.shape({
+      country: PropTypes.string.isRequired,
+      country_code: PropTypes.string.isRequired,
+      state: PropTypes.string.isRequired,
+      county: PropTypes.string.isRequired,
+      city: PropTypes.string.isRequired,
+      postcode: PropTypes.string.isRequired,
+      street: PropTypes.string.isRequired,
+      housenumber: PropTypes.string.isRequired,
+      location: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        coordinates: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
+      }).isRequired,
+      state_code: PropTypes.string.isRequired,
+      result_type: PropTypes.string.isRequired,
+      formatted: PropTypes.string.isRequired,
+      address_line1: PropTypes.string.isRequired,
+      address_line2: PropTypes.string.isRequired,
+    }).isRequired,
+    photos: PropTypes.shape({
+      main: PropTypes.string.isRequired,
+      images: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    }).isRequired,
+    features: PropTypes.shape({
+      maxGuests: PropTypes.number.isRequired,
+      bedrooms: PropTypes.number.isRequired,
+      beds: PropTypes.number.isRequired,
+      bathrooms: PropTypes.number.isRequired,
+    }).isRequired,
+    amenities: PropTypes.object.isRequired,
+    details: PropTypes.shape({
+      price: PropTypes.number.isRequired,
+      description: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    }).isRequired,
+    policies: PropTypes.object.isRequired,
+    rules: PropTypes.object.isRequired,
+  }).isRequired,
 };
 
 export default ListingWizard;

@@ -7,20 +7,10 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useContext } from "react";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
+import PropTypes from "prop-types";
 
 const Geoview = ({ position, data }) => {
   const { theme } = useContext(ThemeContext);
-
-  const markerSize = 30;
-  const marker =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 25 1.0507812 C 24.7825 1.0507812 24.565859 1.1197656 24.380859 1.2597656 L 1.3808594 19.210938 C 0.95085938 19.550938 0.8709375 20.179141 1.2109375 20.619141 C 1.5509375 21.049141 2.1791406 21.129062 2.6191406 20.789062 L 4 19.710938 L 4 46 C 4 46.55 4.45 47 5 47 L 19 47 L 19 29 L 31 29 L 31 47 L 45 47 C 45.55 47 46 46.55 46 46 L 46 19.710938 L 47.380859 20.789062 C 47.570859 20.929063 47.78 21 48 21 C 48.3 21 48.589063 20.869141 48.789062 20.619141 C 49.129063 20.179141 49.049141 19.550938 48.619141 19.210938 L 25.619141 1.2597656 C 25.434141 1.1197656 25.2175 1.0507812 25 1.0507812 z M 35 5 L 35 6.0507812 L 41 10.730469 L 41 5 L 35 5 z" /></svg>';
-  // const markers = () =>
-  //   new L.divIcon({
-  //     html: marker,
-  //     className: "fill-action",
-  //     iconSize: [markerSize, markerSize],
-  //     iconAnchor: [markerSize / 2, markerSize / 2],
-  //   });
 
   const markers = (price) => {
     return new L.divIcon({
@@ -38,7 +28,7 @@ const Geoview = ({ position, data }) => {
       className="h-[92vh] z-10 font-didact"
       dragging={true}
       minZoom={3}
-      maxZoom={20}
+      maxZoom={17}
       zoom={10}
       center={position}
     >
@@ -54,9 +44,12 @@ const Geoview = ({ position, data }) => {
       <MarkerClusterGroup chunkedLoading>
         {data.map((house) => (
           <Marker
-            key={house.house_id}
-            position={[house.latitude, house.longitude]}
-            icon={markers(house.price_per_night)}
+            key={house._id}
+            position={[
+              house.address.location.coordinates[1],
+              house.address.location.coordinates[0],
+            ]}
+            icon={markers(house.price)}
           >
             <Popup>
               <div
@@ -72,10 +65,11 @@ const Geoview = ({ position, data }) => {
                   interval={5000}
                   className="max-w-screen-lg"
                 >
-                  {house.photo &&
-                    house.photo.map((photo, index) => (
+                  {house.photos &&
+                    house.photos.images &&
+                    house.photos.images.map((photo, index) => (
                       <img
-                        key={house.house_id + index}
+                        key={house._id + index}
                         src={photo}
                         alt={house.title}
                         className="w-full h-60 object-cover object-center"
@@ -85,10 +79,10 @@ const Geoview = ({ position, data }) => {
                 <div className="p-4 text-accent2">
                   <h3 className="text-lg font-semibold mb-2">{house.title}</h3>
                   <p className="text-accent2 mb-2">
-                    Price per night: ${house.price_per_night}
+                    Price per night: ${house.price}
                   </p>
                   <p className="text-accent2 mb-2">
-                    Location: {house.location}
+                    Location: {house.address.address_line1}
                   </p>
                 </div>
               </div>
@@ -98,6 +92,26 @@ const Geoview = ({ position, data }) => {
       </MarkerClusterGroup>
     </MapContainer>
   );
+};
+
+Geoview.propTypes = {
+  position: PropTypes.arrayOf(PropTypes.number).isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      address: PropTypes.shape({
+        location: PropTypes.shape({
+          coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
+        }).isRequired,
+        address_line1: PropTypes.string.isRequired,
+      }).isRequired,
+      photos: PropTypes.shape({
+        images: PropTypes.arrayOf(PropTypes.string),
+      }),
+      price: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default Geoview;

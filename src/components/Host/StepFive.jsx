@@ -6,28 +6,33 @@ import axios from "axios";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import PropTypes from "prop-types";
 
-const StepFive = ({ house, accept }) => {
+const StepFive = ({ house, accept, mode }) => {
+  console.log(mode);
   const [preview, setPreview] = useState(false);
   const { showToast } = useContext(NotificationContext);
 
   const handlePublish = useCallback(() => {
     axios
-      .post("http://localhost:8080/host", {
-        houseType: house.houseType,
-        address: house.address,
-        features: house.features,
-        amenities: house.amenities,
-        settings: {
-          cancellationDays: 7,
-          cancellationPercent: 50,
-          changeDays: 7,
+      .request({
+        method: mode ? "PUT" : "POST",
+        url: `http://localhost:8080/host${mode ? `/${house._id}` : ""}`,
+        data: {
+          houseType: house.houseType,
+          address: house.address,
+          features: house.features,
+          amenities: house.amenities,
+          settings: {
+            cancellationDays: 7,
+            cancellationPercent: 50,
+            changeDays: 7,
+          },
+          rules: house.rules,
+          photos: house.photos,
+          title: house.title,
+          description: house.description,
+          price: house.price,
+          currency: "USD",
         },
-        rules: house.rules,
-        photos: house.photos,
-        title: house.title,
-        description: house.description,
-        price: house.price,
-        currency: "USD",
       })
       .then(() => {
         showToast("success", house.houseType, `Successfully Published!`);
@@ -38,6 +43,7 @@ const StepFive = ({ house, accept }) => {
       });
   }, [
     accept,
+    house._id,
     house.address,
     house.amenities,
     house.description,
@@ -47,6 +53,7 @@ const StepFive = ({ house, accept }) => {
     house.price,
     house.rules,
     house.title,
+    mode,
     showToast,
   ]);
 
@@ -96,7 +103,7 @@ const StepFive = ({ house, accept }) => {
           className={`text-primary rounded-lg ml-auto p-6 text-xl border-2 border-primary  hover:bg-primary hover:text-accent1`}
           onClick={() => handlePublish()}
         >
-          Publish
+          {mode ? "Update" : "Publish"}
         </button>
       </div>
       <Dialog
@@ -113,7 +120,9 @@ const StepFive = ({ house, accept }) => {
 };
 
 StepFive.propTypes = {
+  mode: PropTypes.bool.isRequired,
   house: PropTypes.shape({
+    _id: PropTypes.string,
     houseType: PropTypes.string.isRequired,
     address: PropTypes.shape({
       street: PropTypes.string,
