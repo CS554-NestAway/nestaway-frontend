@@ -2,7 +2,6 @@
 /* @import url("react-leaflet-markercluster/dist/styles.min.css");
 @import url("leaflet/dist/leaflet.css"); */
 
-/* IMPORTANT: In "styled" mode you must add the PrimeReact Theme here. Do NOT include in "unstyled" mode */
 @import "primereact/resources/themes/lara-light-blue/theme.css"
   layer(primereact);
 
@@ -84,4 +83,7 @@ html[data-theme="dark"] {
 }
 .search-date-input::placeholder {
   @apply text-accent1;
+}
+.p-rating-item-active > svg{
+  @apply text-primary;
 }

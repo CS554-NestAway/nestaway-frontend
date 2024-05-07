@@ -4,6 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Geoview from "./Geoview";
 import ThemeContext from "../contexts/ThemeContext";
 import api, { HostURL } from "../api";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [position, setPosition] = useState({ latitude: null, longitude: null });
@@ -76,8 +77,8 @@ const Home = () => {
       for (const house of houseData) {
         if (position.latitude && position.longitude) {
           const distance = await calculateDistance(
-            house.address.location.coordinates[1],
-            house.address.location.coordinates[0]
+            house.address?.location.coordinates[1],
+            house.address?.location.coordinates[0]
           );
           distances[house._id] = distance;
         }
@@ -94,8 +95,9 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
           {houseData &&
             houseData.map((house) => (
-              <div
+              <Link
                 key={house._id}
+                to={`/house/${house._id}`}
                 className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer"
               >
                 <Carousel
@@ -138,7 +140,7 @@ const Home = () => {
                     </p>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
         </div>
       ) : (

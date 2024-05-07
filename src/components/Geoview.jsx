@@ -8,6 +8,7 @@ import { useContext } from "react";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const Geoview = ({ position, data }) => {
   const { theme } = useContext(ThemeContext);
@@ -42,53 +43,57 @@ const Geoview = ({ position, data }) => {
       />
 
       <MarkerClusterGroup chunkedLoading>
-        {data.map((house) => (
-          <Marker
-            key={house._id}
-            position={[
-              house.address.location.coordinates[1],
-              house.address.location.coordinates[0],
-            ]}
-            icon={markers(house.price)}
-          >
-            <Popup>
-              <div
-                key={house.house_id}
-                className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary h-full w-full cursor-pointer font-didact"
-              >
-                <Carousel
-                  showThumbs={false}
-                  showIndicators={true}
-                  showStatus={false}
-                  infiniteLoop={true}
-                  autoPlay={true}
-                  interval={5000}
-                  className="max-w-screen-lg"
+        {Array.isArray(data) &&
+          data.map((house) => (
+            <Marker
+              key={house._id}
+              position={[
+                house.address.location.coordinates[1],
+                house.address.location.coordinates[0],
+              ]}
+              icon={markers(house.price)}
+            >
+              <Popup>
+                <Link
+                  to={`/house/${house._id}`}
+                  key={house.house_id}
+                  className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary h-full w-full cursor-pointer font-didact"
                 >
-                  {house.photos &&
-                    house.photos.images &&
-                    house.photos.images.map((photo, index) => (
-                      <img
-                        key={house._id + index}
-                        src={photo}
-                        alt={house.title}
-                        className="w-full h-60 object-cover object-center"
-                      />
-                    ))}
-                </Carousel>
-                <div className="p-4 text-accent2">
-                  <h3 className="text-lg font-semibold mb-2">{house.title}</h3>
-                  <p className="text-accent2 mb-2">
-                    Price per night: ${house.price}
-                  </p>
-                  <p className="text-accent2 mb-2">
-                    Location: {house.address.address_line1}
-                  </p>
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+                  <Carousel
+                    showThumbs={false}
+                    showIndicators={true}
+                    showStatus={false}
+                    infiniteLoop={true}
+                    autoPlay={true}
+                    interval={5000}
+                    className="max-w-screen-lg"
+                  >
+                    {house.photos &&
+                      house.photos.images &&
+                      house.photos.images.map((photo, index) => (
+                        <img
+                          key={house._id + index}
+                          src={photo}
+                          alt={house.title}
+                          className="w-full h-60 object-cover object-center"
+                        />
+                      ))}
+                  </Carousel>
+                  <div className="p-4 text-accent2">
+                    <h3 className="text-lg font-semibold mb-2">
+                      {house.title}
+                    </h3>
+                    <p className="text-accent2 mb-2">
+                      Price per night: ${house.price}
+                    </p>
+                    <p className="text-accent2 mb-2">
+                      Location: {house.address.address_line1}
+                    </p>
+                  </div>
+                </Link>
+              </Popup>
+            </Marker>
+          ))}
       </MarkerClusterGroup>
     </MapContainer>
   );
