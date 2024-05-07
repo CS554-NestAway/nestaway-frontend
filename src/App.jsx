@@ -14,10 +14,10 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/bookings/host" element={BookingsHost} />
-          <Route path="/bookings/guest" element={BookingsGuest} />
-          <Route path="/bookings/host/:houseId" element={BookingHost} />
-          <Route path="/bookings/guest/:houseId" element={BookingGuest} />
+          <Route path="/bookings/host" element={<BookingsHost />} />
+          <Route path="/bookings/guest" element={<BookingsGuest />} />
+          <Route path="/bookings/host/:houseId" element={<BookingHost />} />
+          <Route path="/bookings/guest/:houseId" element={<BookingGuest />} />
         </Routes>
       </Router>
     </ThemeProvider>

@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const baseUrl = "http://3.22.240.238:81";
+const baseUrl = "http://localhost:8080" || "http://3.22.240.238:81";
 
 const url = {
-  bookingsGuest(userId) {
-    return `${baseUrl}/bookings/user/${userId}`;
+  bookingsGuest() {
+    return `${baseUrl}/guest/bookings`;
   },
-  bookingsHost(hostId) {
-    return `${baseUrl}/bookings/host/${hostId}`;
+  bookingsHost() {
+    return `${baseUrl}/bookings/host`;
   },
 };
 
