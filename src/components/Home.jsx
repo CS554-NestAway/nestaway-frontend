@@ -5,6 +5,8 @@ import Geoview from "./Geoview";
 import ThemeContext from "../contexts/ThemeContext";
 import api, { HostURL } from "../api";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { searchHouses } from "../store/houseSlice";
 
 const Home = () => {
   const [position, setPosition] = useState({ latitude: null, longitude: null });
@@ -13,19 +15,7 @@ const Home = () => {
   const [view, setView] = useState("map");
   const { theme } = useContext(ThemeContext);
 
-  // const getDistance = async (nestLat, nestLong) => {
-  //   const waypoints = `${position.latitude},${position.longitude}|${nestLat},${nestLong}`;
-  //   const url = `https://api.geoapify.com/v1/routing?waypoints=${waypoints}&mode=drive&units=imperial&apiKey=6ce0477b523f47759dbad5b68b1efe77`;
-
-  //   try {
-  //     const response = await axios.get(url);
-  //     const distance = response.data.features[0].properties.distance + " miles";
-  //     return distance;
-  //   } catch (error) {
-  //     console.error("Error fetching distance:", error);
-  //     return "N/A";
-  //   }
-  // };
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -36,15 +26,19 @@ const Home = () => {
     }
   }, []);
   useEffect(() => {
-    api
-      .get(HostURL)
-      .then((response) => {
-        setHouseData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // api
+    //   .get(HostURL)
+    //   .then((response) => {
+    //     setHouseData(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   }, []);
+
+  useEffect(() => {
+    dispatch(searchHouses()); // Dispatch the action to fetch houses
+  }, [dispatch]);
 
   const calculateDistance = useCallback(
     async (nestLat, nestLong) => {

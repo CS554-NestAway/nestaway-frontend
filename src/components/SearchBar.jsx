@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api, { GetUniqueStates } from "../api";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
@@ -25,6 +25,10 @@ const SearchBar = () => {
     return () => {
       setUniqueStates([]);
     };
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    api.get;
   }, []);
 
   return (
@@ -65,7 +69,10 @@ const SearchBar = () => {
             }
             dateFormat="mm/dd/yy"
           />
-          <div className="flex justify-center items-center rounded-xl bg-primary text-accent1 hover:bg-action min-w-36 w-36 py-2 px-6">
+          <div
+            className="flex justify-center items-center rounded-xl bg-primary text-accent1 hover:bg-action min-w-36 w-36 py-2 px-6"
+            onClick={() => handleSearch()}
+          >
             Search
           </div>
         </>
