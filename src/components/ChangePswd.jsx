@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { doChangePassword } from "../firebase/FirebaseFunctions";
+import axios from "axios";
 
 function ChangePassword() {
   const { currentUser } = useContext(AuthContext);

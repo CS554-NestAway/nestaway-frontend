@@ -150,7 +150,7 @@ const ListinDetail = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Amenities Card */}
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 p-6 shadow-shadow2 rounded-xl">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4 p-6 shadow-shadow2 rounded-xl">
             {Object.entries(amenities).map(
               ([key, value]) =>
                 value && (
