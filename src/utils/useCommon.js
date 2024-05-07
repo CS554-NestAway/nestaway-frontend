@@ -5,6 +5,7 @@ import { AuthContext } from "../contexts/AuthContext";
 const useCommon = () => {
   const BaseURL = import.meta.env.VITE_BASE_URL;
   const { currentUser } = useContext(AuthContext);
+  // console.log(currentUser);
   //   useEffect(() => {
   //     console.log("useCommon");
   //   }, []);
@@ -16,6 +17,7 @@ const useCommon = () => {
         if (!isAbsoluteURLRegex.test(config.url)) {
           config.url = BaseURL + config.url;
         }
+        console.log(currentUser?.accessToken);
         const AuthToken = currentUser?.accessToken;
         if (AuthToken === null || AuthToken === undefined || AuthToken === "") {
           config.headers.Authorization = "";
