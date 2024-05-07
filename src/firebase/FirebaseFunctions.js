@@ -11,7 +11,7 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import axios from "axios";
+import api, { NewUserURL } from "../api";
 
 async function doCreateUserWithEmailAndPassword(email, password, displayName) {
   const auth = getAuth();
@@ -38,11 +38,10 @@ async function doCreateUserWithEmailAndPassword(email, password, displayName) {
   }
 
   try {
-    await axios.post("http://localhost:8080/user/newuser", {
+    await api.post(NewUserURL, {
       name: displayName,
       email: user.email,
     });
-    console.log("User created and profile updated successfully.");
     await doSignOut();
   } catch (error) {
     console.error("Error posting user data:", error.message);
@@ -85,6 +84,7 @@ async function doPasswordReset(email) {
 async function doSignOut() {
   let auth = getAuth();
   await signOut(auth);
+  window.location.href = "/";
 }
 
 export {

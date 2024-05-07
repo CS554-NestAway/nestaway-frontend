@@ -4,7 +4,6 @@ import { Carousel } from "react-responsive-carousel";
 import { ButtonGroup } from "./ButtonGroup";
 import ListingWizard from "./ListingWizard";
 import { AuthContext } from "../../contexts/AuthContext";
-import axios from "axios";
 import {
   initialAmenities,
   initialDetails,
@@ -12,6 +11,7 @@ import {
   initialPolicies,
   initialRules,
 } from "../../constants";
+import api, { HostURL } from "../../api";
 
 const Host = () => {
   const { currentUser } = useContext(AuthContext);
@@ -41,8 +41,8 @@ const Host = () => {
   }, []);
 
   const handleUpdateListing = useCallback((id) => {
-    axios
-      .get("http://localhost:8080/host/" + id)
+    api
+      .get(HostURL + id)
       .then((response) => {
         setHouseDetails(response.data);
         setWizardVisible(true);
@@ -56,8 +56,8 @@ const Host = () => {
   const handleCloseWizard = useCallback(() => {
     setWizardVisible(false);
     setHouseDetails(null);
-    axios
-      .get("http://localhost:8080/host")
+    api
+      .get(HostURL)
       .then((response) => {
         setHouseData(response.data);
       })
@@ -68,8 +68,8 @@ const Host = () => {
 
   useEffect(() => {
     toggleSearchVisible(false);
-    axios
-      .get("http://localhost:8080/host")
+    api
+      .get(HostURL)
       .then((response) => {
         setHouseData(response.data);
       })

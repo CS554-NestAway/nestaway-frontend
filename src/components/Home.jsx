@@ -1,10 +1,9 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-// import { houseData } from "./sample";
 import { Carousel } from "react-responsive-carousel";
-import axios from "axios";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Geoview from "./Geoview";
 import ThemeContext from "../contexts/ThemeContext";
+import api, { HostURL } from "../api";
 
 const Home = () => {
   const [position, setPosition] = useState({ latitude: null, longitude: null });
@@ -36,8 +35,8 @@ const Home = () => {
     }
   }, []);
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/host")
+    api
+      .get(HostURL)
       .then((response) => {
         setHouseData(response.data);
       })
@@ -91,9 +90,6 @@ const Home = () => {
 
   return (
     <div className={`font-didact ${theme === "light" ? "" : "bg-black"}`}>
-      {/* <div className="flex w-full h-full justify-center items-center my-4">
-        <SearchBar />
-      </div> */}
       {view === "list" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
           {houseData &&

@@ -82,3 +82,6 @@ html[data-theme="dark"] {
 .p-inputtext::placeholder {
   @apply text-accent2;
 }
+.search-date-input::placeholder {
+  @apply text-accent1;
+}

@@ -13,7 +13,6 @@ import { validHouseTypes } from "../../constants";
 import PropTypes from "prop-types";
 
 const ListingWizard = ({ active, mode, onClose, houseDetails }) => {
-  console.log(mode);
   const stepperRef = useRef(null);
   const [houseType, setHouseType] = useState(houseDetails.houseType);
   const [houseAddress, setHouseAddress] = useState(houseDetails.houseAddress);

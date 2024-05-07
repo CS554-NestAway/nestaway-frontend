@@ -39,8 +39,16 @@ const Navbar = () => {
           >
             Nest your Home
           </Link>
+          <button
+            className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
+            onClick={toggleTheme}
+          >
+            Theme
+          </button>
           <Link
-            className={`text-accent1 rounded-lg ml-auto px-2 bg-primary hover:bg-action`}
+            className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+              pathname?.includes("account") ? "z-10 bg-action" : "bg-primary"
+            } `}
             to="/account"
           >
             Account

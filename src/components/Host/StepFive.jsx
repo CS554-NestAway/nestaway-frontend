@@ -2,20 +2,19 @@ import { useCallback, useContext, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import { Dialog } from "primereact/dialog";
 import ListingPreview from "./ListingPreview";
-import axios from "axios";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import PropTypes from "prop-types";
+import api, { HostURL } from "../../api";
 
 const StepFive = ({ house, accept, mode }) => {
-  console.log(mode);
   const [preview, setPreview] = useState(false);
   const { showToast } = useContext(NotificationContext);
 
   const handlePublish = useCallback(() => {
-    axios
+    api
       .request({
         method: mode ? "PUT" : "POST",
-        url: `http://localhost:8080/host${mode ? `/${house._id}` : ""}`,
+        url: `${HostURL}${mode ? `${house._id}` : ""}`,
         data: {
           houseType: house.houseType,
           address: house.address,

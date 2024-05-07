@@ -1,18 +1,64 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import api, { GetUniqueStates } from "../api";
+import { Dropdown } from "primereact/dropdown";
+import { Calendar } from "primereact/calendar";
 
 const SearchBar = () => {
+  const [uniqueStates, setUniqueStates] = useState([]);
+  const [query, setQuery] = useState({
+    state: "",
+    checkIn: "",
+    checkOut: "",
+  });
+  useEffect(() => {
+    api
+      .get(GetUniqueStates)
+      .then((response) => {
+        setUniqueStates(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    return () => {
+      setUniqueStates([]);
+    };
+  }, []);
+
   return (
-    <div className="flex bg-secondary shadow-shadow2 text-accent2 rounded-2xl gap-2 whitespace-nowrap cursor-pointer">
-      <div className="flex justify-center rounded-2xl hover:bg-accent1 w-full h-full py-2 px-6">
-        Destination
-      </div>
-      <div className="flex justify-center rounded-2xl hover:bg-accent1 w-full h-full py-2 px-6">
-        Check-In
-      </div>
-      <div className="flex justify-center rounded-2xl hover:bg-accent1 w-full h-full py-2 px-6">
-        Check-Out
-      </div>
-      <div className="flex justify-center rounded-2xl bg-primary text-accent1 hover:bg-action w-full h-full py-2 px-6">
+    <div className="flex bg-accent1 shadow-shadow2 rounded-xl whitespace-nowrap cursor-pointer border border-primary">
+      <Dropdown
+        className="flex justify-center items-center rounded-xl bg-accent1 text-accent2 hover:bg-secondary min-w-64 w-64 px-6 focus:shadow-none focus-visible:outline-none"
+        panelClassName="bg-accent1 text-accent2"
+        value={query.state}
+        options={uniqueStates.map((state) => ({
+          label: state,
+          value: state,
+        }))}
+        placeholder="Select Destination"
+        onChange={(e) =>
+          setQuery((prevValue) => ({ ...prevValue, state: e.value }))
+        }
+      />
+      <Calendar
+        inputClassName="placeholder:text-accent2 bg-accent1 flex justify-center rounded-xl hover:bg-secondary min-w-40 w-40 px-6 focus:shadow-none focus-visible:outline-none"
+        placeholder="Check-In"
+        value={query.checkIn}
+        onChange={(e) =>
+          setQuery((prevValue) => ({ ...prevValue, checkIn: e.value }))
+        }
+        dateFormat="mm/dd/yy"
+      />
+      <Calendar
+        inputClassName="placeholder:text-accent2 bg-accent1 flex justify-center rounded-xl hover:bg-secondary min-w-40 w-40 px-6 focus:shadow-none focus-visible:outline-none"
+        placeholder="Check-Out"
+        value={query.checkOut}
+        onChange={(e) =>
+          setQuery((prevValue) => ({ ...prevValue, checkOut: e.value }))
+        }
+        dateFormat="mm/dd/yy"
+      />
+      <div className="flex justify-center items-center rounded-xl bg-primary text-accent1 hover:bg-action min-w-36 w-36 py-2 px-6">
         Search
       </div>
     </div>

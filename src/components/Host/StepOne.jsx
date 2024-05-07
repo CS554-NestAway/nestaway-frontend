@@ -12,7 +12,6 @@ const StepOne = ({
   houseAddress,
   setHouseAddress,
 }) => {
-  console.log(houseType, houseAddress);
   const { theme } = useContext(ThemeContext);
   const [addressOptions, setAddressOptions] = useState([]);
 
