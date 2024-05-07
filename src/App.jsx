@@ -6,6 +6,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login"; 
 import UserAccount from "./components/UserAccount";
+import ChangePassword from "./components/ChangePswd";
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/account" element={<UserAccount />} />
+          <Route path="/chngpswd" element={<ChangePassword />} />
         </Routes>
       </Router>
       </AuthProvider>

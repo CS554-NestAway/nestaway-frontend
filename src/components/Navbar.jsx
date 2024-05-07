@@ -45,11 +45,11 @@ const Navbar = () => {
             Theme
           </button>
           <Link
-          to="/account" 
-          className={`text-accent1 rounded-lg px-4 bg-primary hover:bg-action`}
-        >
-          Account
-        </Link>
+  to="/account" 
+  className={`text-accent1 rounded-lg px-4 bg-primary hover:bg-action flex items-center justify-center`}
+>
+  Account
+</Link>
       </div>
       {showUserAccount && (
         <div className="absolute top-[4rem] right-0 w-[20rem] bg-white shadow-md rounded-md">

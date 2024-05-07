@@ -32,73 +32,62 @@ function ChangePassword() {
 
   useEffect(() => {}, [name]);
 
-  if (currentUser.providerData[0].providerId === 'password') {
-    return (
-      <div>
-        {pwMatch && <h4 className='error'>{pwMatch}</h4>}
-        <h2>Hi {name}, You can view and update your Profile here</h2>
-        <form onSubmit={submitChangePasswordForm}>
-          <div className='form-group'>
-            <label>
-              Current Password:
-              <input
-                className='form-control'
-                name='currentPassword'
-                id='currentPassword'
-                type='password'
-                placeholder='Current Password'
-                autoComplete='off'
-                required
-              />
-            </label>
-          </div>
-
-          <div className='form-group'>
-            <label>
-              New Password:
-              <input
-                className='form-control'
-                name='newPasswordOne'
-                id='newPasswordOne'
-                type='password'
-                placeholder='Password'
-                autoComplete='off'
-                required
-              />
-            </label>
-          </div>
-          <div className='form-group'>
-            <label>
-              Confirm New Password:
-              <input
-                className='form-control'
-                name='newPasswordTwo'
-                id='newPasswordTwo'
-                type='password'
-                placeholder='Confirm Password'
-                autoComplete='off'
-                required
-              />
-            </label>
-          </div>
-
-          <button className='button' type='submit'>
-            Change Password
-          </button>
-        </form>
-        <br />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <h2>
-          {currentUser.displayName}, You are signed in using a Social Media
-          Provider, You cannot change your password
-        </h2>
-      </div>
-    );
-  }
+  return (
+    <div className="max-w-md mx-auto mt-8 bg-white p-8 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-4">Change Password</h2>
+      {pwMatch && <div className="text-red-500 mb-4">{pwMatch}</div>}
+      <form onSubmit={submitChangePasswordForm}>
+        <div className="mb-4">
+          <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700">
+            Current Password
+          </label>
+          <input
+            id="currentPassword"
+            name="currentPassword"
+            type="password"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            placeholder="Enter your current password"
+            autoComplete="current-password"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="newPasswordOne" className="block text-sm font-medium text-gray-700">
+            New Password
+          </label>
+          <input
+            id="newPasswordOne"
+            name="newPasswordOne"
+            type="password"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            placeholder="Enter your new password"
+            autoComplete="new-password"
+            required
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="newPasswordTwo" className="block text-sm font-medium text-gray-700">
+            Confirm New Password
+          </label>
+          <input
+            id="newPasswordTwo"
+            name="newPasswordTwo"
+            type="password"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            placeholder="Confirm your new password"
+            autoComplete="new-password"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary hover:bg-action focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+        >
+          Change Password
+        </button>
+      </form>
+    </div>
+  );
 }
 
 export default ChangePassword;
