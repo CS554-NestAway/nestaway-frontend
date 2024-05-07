@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
+import PaymentGateway from "./components/PaymentGateway";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Host from "./components/Host/Host";
 import "primeicons/primeicons.css";
@@ -33,6 +34,7 @@ const App = () => {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
               <Route path="/account" element={<UserAccount />} />
+              <Route path="/payment" element={<PaymentGateway />} />
             </Routes>
           </Router>
         </NotificationProvider>
