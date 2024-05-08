@@ -24,10 +24,7 @@ const GuestBookings = () => {
   // Function to cancel a booking
   const cancelBooking = async (bookingId) => {
     try {
-      await fetch(`https://api.example.com/bookings/cancel/${bookingId}`, {
-        method: "POST",
-      });
-      setBookings((prev) => prev.filter((booking) => booking.id !== bookingId));
+      console.log("cancelling");
     } catch (error) {
       console.error("Failed to cancel booking:", error);
     }
@@ -46,7 +43,8 @@ const GuestBookings = () => {
         bookings.map((booking) => (
           <div key={booking.id}>
             <p>Booking ID: {booking.id}</p>
-            <p>Date: {booking.date}</p>
+            <p>CheckIn: {booking.checkIn}</p>
+            <p>CheckOut: {booking.checkOut}</p>
             <button onClick={() => changeBookingDate(booking.id)}>
               Change Date
             </button>
