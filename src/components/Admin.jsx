@@ -1,19 +1,27 @@
-import React, { useCallback, useEffect, useState } from "react";
-import api, {
-  ApproveHouse,
-  GetAllPending,
-  GetHouseDetails,
-  RejectHouse,
-} from "../api";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { ApproveHouse, GetAllPending, RejectHouse } from "../api";
 import { Carousel } from "react-responsive-carousel";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { AuthContext } from "../contexts/AuthContext";
+
+const BaseURL = import.meta.env.VITE_BASE_URL;
 
 const Admin = () => {
   const [houseData, setHouseData] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { currentUser } = useContext(AuthContext);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const response = await api.get(GetAllPending);
+      let headers = {};
+      if (currentUser) {
+        headers = {
+          Authorization: `Bearer ${currentUser.accessToken}`,
+        };
+      }
+
+      const response = await axios.get(BaseURL + GetAllPending, { headers });
       if (response.data.isAdmin) {
         setIsAdmin(true);
         setHouseData(response.data.houses);
@@ -24,22 +32,44 @@ const Admin = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }, [currentUser]);
 
-  const handleApprove = useCallback((houseId) => {
-    api.get(ApproveHouse + houseId).then((response) => {
-      fetchData();
-    });
-  }, []);
-  const handleReject = useCallback((houseId) => {
-    api.get(RejectHouse + houseId).then((response) => {
-      fetchData();
-    });
-  }, []);
+  const handleApprove = useCallback(
+    (houseId) => {
+      let headers = {};
+      if (currentUser) {
+        headers = {
+          Authorization: `Bearer ${currentUser.accessToken}`,
+        };
+      }
+      axios
+        .get(BaseURL + ApproveHouse + houseId, { headers })
+        .then((response) => {
+          fetchData();
+        });
+    },
+    [currentUser, fetchData]
+  );
+  const handleReject = useCallback(
+    (houseId) => {
+      let headers = {};
+      if (currentUser) {
+        headers = {
+          Authorization: `Bearer ${currentUser.accessToken}`,
+        };
+      }
+      axios
+        .get(BaseURL + RejectHouse + houseId, { headers })
+        .then((response) => {
+          fetchData();
+        });
+    },
+    [currentUser, fetchData]
+  );
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div className="h-[91.5vh] bg-secondary overflow-y-auto">

@@ -3,29 +3,46 @@ import SignOutButton from "./SignOut";
 import ChangePassword from "./ChangePswd";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import api from "../api";
+import axios from "axios";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 function UserAccount() {
   const { currentUser } = useContext(AuthContext);
   const [credits, setCredits] = useState(0);
 
   const handleAddCredits = useCallback(() => {
-    api
-      .post("/credits/add", {
-        creditsToAdd: 1000,
-      })
+    let headers = {};
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
+    axios
+      .post(
+        BaseURL + "/credits/add",
+        {
+          creditsToAdd: 1000,
+        },
+        { headers }
+      )
       .then(() => {
-        api.get("/credits").then((response) => {
+        axios.get(BaseURL + "/credits", { headers }).then((response) => {
           setCredits(response.data);
         });
       });
   }, []);
 
   useEffect(() => {
-    api.get("/credits").then((response) => {
+    let headers = {};
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
+    axios.get(BaseURL + "/credits", { headers }).then((response) => {
       setCredits(response.data);
     });
-  }, []);
+  }, [currentUser]);
 
   if (!currentUser) {
     return <Navigate to="/" />;

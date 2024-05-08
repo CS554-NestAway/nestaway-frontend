@@ -5,32 +5,22 @@ import PaymentGateway from "./components/PaymentGateway";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Host from "./components/Host/Host";
 import "primeicons/primeicons.css";
-import { AuthContext, AuthProvider } from "./contexts/AuthContext";
+import { AuthContext } from "./contexts/AuthContext";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import UserAccount from "./components/UserAccount";
 import { NotificationProvider } from "./contexts/NotificationContext";
-import { memo, useContext } from "react";
-import useCommon from "./utils/useCommon";
+import { useContext } from "react";
 import ListingDetail from "./components/ListingDetail";
 import PaymentSuccessful from "./components/PaymentSuccessful";
 import Admin from "./components/Admin";
 import Bookings from "./components/Bookings";
 
-const CommonHook = memo(() => {
-  useCommon();
-  return null;
-});
-
-CommonHook.displayName = "CommonHook";
-
 const App = () => {
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
   return (
     <ThemeProvider>
       <NotificationProvider>
-        <CommonHook />
         <Router>
           <Navbar />
           <Routes>

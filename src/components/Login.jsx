@@ -20,9 +20,7 @@ function Login() {
 
     try {
       await doSignInWithEmailAndPassword(email.value, password.value);
-      setTimeout(() => {
-        dispatch(checkIfAdminAsync());
-      }, 2000);
+      dispatch(checkIfAdminAsync());
     } catch (error) {
       alert(error);
     }

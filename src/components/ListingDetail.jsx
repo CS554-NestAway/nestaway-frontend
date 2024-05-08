@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
-import api, { GetHouseDetails, HostURL } from "../api";
+import { GetHouseDetails, HostURL } from "../api";
 import ThemeContext from "../contexts/ThemeContext";
 import { Rating } from "primereact/rating";
 import { InputNumber } from "primereact/inputnumber";
@@ -32,6 +32,9 @@ import {
 } from "@phosphor-icons/react";
 import moment from "moment";
 import { AuthContext } from "../contexts/AuthContext";
+import axios from "axios";
+
+const BaseURL = import.meta.env.VITE_BASE_URL;
 
 const icons = {
   wifi: <WifiHigh className="text-primary text-2xl" />,
@@ -72,8 +75,8 @@ const ListingDetail = () => {
   };
 
   useEffect(() => {
-    api
-      .get(GetHouseDetails + id)
+    axios
+      .get(BaseURL + GetHouseDetails + id)
       .then((response) => {
         setHouseDetails(response.data);
       })

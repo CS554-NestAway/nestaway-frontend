@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import api, { GetUniqueStates } from "../api";
+import { GetUniqueStates } from "../api";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,9 @@ import {
   setQuery,
 } from "../store/houseSlice";
 import moment from "moment";
+import axios from "axios";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 const SearchBar = () => {
   const [uniqueStates, setUniqueStates] = useState([]);
   const [disabled, setDisabled] = useState(true);
@@ -24,8 +26,8 @@ const SearchBar = () => {
 
   const query = useSelector((state) => state.houses.query);
   useEffect(() => {
-    api
-      .get(GetUniqueStates)
+    axios
+      .get(BaseURL + GetUniqueStates)
       .then((response) => {
         if (typeof response.data === "object") {
           setUniqueStates(response.data);
@@ -65,10 +67,6 @@ const SearchBar = () => {
       return false;
     }
   }, [query]);
-
-  // const handleSearch = useCallback(() => {
-  //   api.get;
-  // }, []);
 
   return (
     <div className="flex bg-accent1 shadow-shadow2 rounded-xl whitespace-nowrap cursor-pointer border border-primary">

@@ -5,11 +5,14 @@ import ListingPreview from "./ListingPreview";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import PropTypes from "prop-types";
 import api, { GetHouseDetails, HostURL } from "../../api";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 const StepFive = ({ house, accept, mode }) => {
   const [preview, setPreview] = useState(false);
   const { showToast } = useContext(NotificationContext);
-  // console.log(house);
+  const currentUser = useSelector((state) => state.auth.currentUser);
   const handlePublish = useCallback(async () => {
     const data = {
       houseType: house.houseType,
@@ -24,9 +27,15 @@ const StepFive = ({ house, accept, mode }) => {
       price: house.price,
       currency: "USD",
     };
+    let headers = {};
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
     if (mode) {
-      await api
-        .put(`${GetHouseDetails}${house._id}`, data)
+      await axios
+        .put(BaseURL + `${GetHouseDetails}${house._id}`, data, { headers })
         .then(() => {
           showToast("success", house.houseType, `Successfully Updated!`);
           accept();
@@ -35,8 +44,8 @@ const StepFive = ({ house, accept, mode }) => {
           console.error(error);
         });
     } else {
-      await api
-        .post(GetHouseDetails, data)
+      await axios
+        .post(BaseURL + GetHouseDetails, data, { headers })
         .then(() => {
           showToast("success", house.houseType, `Successfully Published!`);
           accept();
@@ -47,6 +56,7 @@ const StepFive = ({ house, accept, mode }) => {
     }
   }, [
     accept,
+    currentUser,
     house._id,
     house.address,
     house.amenities,

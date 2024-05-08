@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api, { CheckAdmin } from "../api";
+import axios from "axios";
+
+const BaseURL = import.meta.env.VITE_BASE_URL;
 
 const initialState = {
   currentUser: null,
@@ -57,10 +60,17 @@ export const setCurrentUserAsync = createAsyncThunk(
 );
 export const checkIfAdminAsync = createAsyncThunk(
   "checkIfAdminAsync",
-  async () => {
-    let isAdmin = false;
-    isAdmin = await api
-      .get(CheckAdmin)
+  async (_, { getState }) => {
+    let isAdmin = false,
+      headers = {};
+    const { currentUser } = getState().auth;
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
+    isAdmin = await axios
+      .get(BaseURL + CheckAdmin, { headers })
       .then((response) => {
         return response.data.isAdmin;
       })

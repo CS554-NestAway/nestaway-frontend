@@ -8,9 +8,7 @@ const SocialSignIn = () => {
   const socialSignOn = async () => {
     try {
       await doSocialSignIn();
-      setTimeout(() => {
-        dispatch(checkIfAdminAsync());
-      }, 2000);
+      dispatch(checkIfAdminAsync());
     } catch (error) {
       alert(error);
     }

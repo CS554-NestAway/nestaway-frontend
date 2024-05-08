@@ -37,7 +37,7 @@ const useCommon = () => {
         return Promise.reject(error);
       }
     );
-  }, [BaseURL, currentUser]);
+  }, [BaseURL, currentUser, numberOfAjaxCAllPending]);
 };
 
 export default useCommon;
