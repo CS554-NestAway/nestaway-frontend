@@ -59,7 +59,13 @@ async function updateUserProfile(displayName) {
   async function doSocialSignIn() {
     let auth = getAuth();
     let socialProvider = new GoogleAuthProvider();
-    await signInWithPopup(auth, socialProvider);
+    try {
+      await signInWithPopup(auth, socialProvider);
+      const user = auth.currentUser;
+      return { email: user.email, displayName: user.displayName };
+    } catch (error) {
+      throw new Error('Error signing in with Google');
+    }
   }
   
   async function doPasswordReset(email) {
