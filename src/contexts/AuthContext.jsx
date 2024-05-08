@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { setCurrentUserAsync } from "../store/authSlice";
 
 export const AuthContext = React.createContext();
 
@@ -8,15 +10,18 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const auth = getAuth();
+  const dispatch = useDispatch();
   useEffect(() => {
-    let myListener = onAuthStateChanged(auth, (user) => {
+    const myListener = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      dispatch(setCurrentUserAsync(user));
       setLoadingUser(false);
     });
+
     return () => {
       if (myListener) myListener();
     };
-  }, []);
+  }, [dispatch, auth]);
 
   if (loadingUser) {
     return (

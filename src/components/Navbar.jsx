@@ -6,12 +6,14 @@ import ThemeContext from "../contexts/ThemeContext";
 import { AuthContext } from "../contexts/AuthContext";
 import UserAccount from "./UserAccount";
 import SearchBar from "./SearchBar";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const { pathname } = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
   const { theme, toggleTheme, searchVisible } = useContext(ThemeContext);
+  const isAdmin = useSelector((state) => state.auth.isAdmin);
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -39,6 +41,17 @@ const Navbar = () => {
           >
             Nest your Home
           </Link>
+          {isAdmin && (
+            <Link
+              className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+                pathname?.includes("admin") ? "z-10 bg-action" : "bg-primary"
+              } `}
+              to="/admin"
+            >
+              Admin Dashboard
+            </Link>
+          )}
+
           <button
             className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
             onClick={toggleTheme}

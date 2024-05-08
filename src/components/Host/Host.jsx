@@ -11,15 +11,18 @@ import {
   initialPolicies,
   initialRules,
 } from "../../constants";
-import api, { HostURL } from "../../api";
+import api, { GetHouseDetails, GetHousesByHost, HostURL } from "../../api";
+import { Navigate } from "react-router-dom";
 
 const Host = () => {
   const { currentUser } = useContext(AuthContext);
   const [wizardVisible, setWizardVisible] = useState(false);
+  const [currentData, setCurrentData] = useState([]);
   const [houseData, setHouseData] = useState([]);
+  const [listingData, setListingData] = useState(null);
   const [houseDetails, setHouseDetails] = useState(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
-
+  console.log(listingData);
   const { toggleSearchVisible } = useContext(ThemeContext);
 
   const listingButtons = [
@@ -42,7 +45,7 @@ const Host = () => {
 
   const handleUpdateListing = useCallback((id) => {
     api
-      .get(HostURL + id)
+      .get(GetHouseDetails + id)
       .then((response) => {
         setHouseDetails(response.data);
         setWizardVisible(true);
@@ -57,9 +60,17 @@ const Host = () => {
     setWizardVisible(false);
     setHouseDetails(null);
     api
-      .get(HostURL)
+      .get(GetHousesByHost)
       .then((response) => {
         setHouseData(response.data);
+        api
+          .get(HostURL)
+          .then((response) => {
+            setListingData(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -69,9 +80,17 @@ const Host = () => {
   useEffect(() => {
     toggleSearchVisible(false);
     api
+      .get(GetHousesByHost)
+      .then((response) => {
+        setHouseData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    api
       .get(HostURL)
       .then((response) => {
-        setHouseData(response.data.current);
+        setListingData(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -81,6 +100,9 @@ const Host = () => {
     };
   }, []);
 
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
   return (
     <div
       className={`flex flex-col w-full h-screen px-20 py-4 font-didact gap-4 bg-accent1 text-accent2 ${
@@ -108,7 +130,7 @@ const Host = () => {
           />
         </div>
         <div className="border-b border-accent2 w-full"></div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-6">
+        <div className="bg-secondary grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-6">
           {houseData.map((house) => (
             <div
               key={house._id}
@@ -143,6 +165,23 @@ const Host = () => {
                 <p className="text-accent2 mb-2">
                   Location: {house.address.address_line1}
                 </p>
+
+                {house.isApproved && (
+                  <div className="bg-info w-fit px-4 py-2 text-accent1 rounded-lg">
+                    Approved
+                  </div>
+                )}
+
+                {!house.isApproved && house.isDeleted && (
+                  <div className="bg-error w-fit px-4 py-2 text-accent1 rounded-lg">
+                    Rejected
+                  </div>
+                )}
+                {!house.isApproved && !house.isDeleted && (
+                  <div className="bg-warning w-fit px-4 py-2 text-accent1 rounded-lg">
+                    Pending
+                  </div>
+                )}
               </div>
             </div>
           ))}

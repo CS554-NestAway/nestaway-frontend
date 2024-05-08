@@ -4,6 +4,7 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -16,19 +17,14 @@ import millify from "millify";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  searchHousesByState,
-  setMapCenter,
-  setQuery,
-} from "../store/houseSlice";
+import { searchHousesByState, setIsDrag, setQuery } from "../store/houseSlice";
 
 const Geoview = ({ data }) => {
   const { theme } = useContext(ThemeContext);
   const map = useRef(null);
-  const query = useSelector((state) => state.houses.query);
   const [mapZoom, setMapZoom] = useState(10);
   const mapCenter = useSelector((state) => state.houses.mapCenter);
-  const [isDrag, setIsDrag] = useState(true);
+  const isDrag = useSelector((state) => state.houses.isDrag);
 
   const dispatch = useDispatch();
 
@@ -47,7 +43,7 @@ const Geoview = ({ data }) => {
   };
 
   const handleDragEnd = (event) => {
-    setIsDrag(true);
+    dispatch(setIsDrag(true));
     const center = event.target.getCenter();
     dispatch(
       setQuery({
@@ -77,7 +73,7 @@ const Geoview = ({ data }) => {
   };
 
   useEffect(() => {
-    if (map.current) {
+    if (map.current && !isDrag) {
       if (data[0]?.address.location?.coordinates) {
         const { coordinates } = data[0].address.location;
         const latLng = L.latLng(coordinates[1], coordinates[0]);
@@ -108,13 +104,18 @@ const Geoview = ({ data }) => {
     <MapContainer
       ref={map}
       zoomControl={true}
-      className="h-[92vh] z-10 font-didact"
+      className="h-[91.5vh] z-10 font-didact"
       dragging={true}
-      minZoom={3}
+      minZoom={5}
       maxZoom={17}
       zoom={mapZoom}
-      center={mapCenter}
+      center={mapCenter || [40.757957305672726, -74.0471129340117]}
+      maxBounds={[
+        [51, -128],
+        [22, -64],
+      ]}
     >
+      <RerenderMap />
       <DragEvents />
       <TileLayer
         url={
@@ -126,7 +127,7 @@ const Geoview = ({ data }) => {
       />
 
       <MarkerClusterGroup chunkedLoading>
-        {Array.isArray(data) &&
+        {data &&
           data.map((house) => (
             <Marker
               key={house._id}
@@ -140,7 +141,7 @@ const Geoview = ({ data }) => {
                 <Link
                   to={`/house/${house._id}`}
                   key={house.house_id}
-                  className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary h-full w-full cursor-pointer font-didact"
+                  className="bg-accent1 text-accent2 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary h-full w-full cursor-pointer font-didact"
                 >
                   <Carousel
                     showThumbs={false}
@@ -162,7 +163,7 @@ const Geoview = ({ data }) => {
                         />
                       ))}
                   </Carousel>
-                  <div className="p-4 text-accent2">
+                  <div className="p-4 bg-accent1 text-accent2 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">
                       {house.title}
                     </h3>
@@ -202,3 +203,13 @@ Geoview.propTypes = {
 };
 
 export default Geoview;
+
+const RerenderMap = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+  }, [map]);
+};

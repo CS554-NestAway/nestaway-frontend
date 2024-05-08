@@ -11,6 +11,7 @@ const initialState = {
     lng: "",
     radius: 10,
   },
+  isDrag: true,
   isLoading: false,
   isError: false,
   mapCenter: null,
@@ -22,6 +23,9 @@ export const houseSlice = createSlice({
   reducers: {
     setQuery: (state, action) => {
       state.query = action.payload;
+    },
+    setIsDrag: (state, action) => {
+      state.isDrag = action.payload;
     },
     setMapCenter: (state, action) => {
       state.mapCenter = action.payload;
@@ -51,7 +55,7 @@ export const houseSlice = createSlice({
   },
 });
 
-export const { setQuery, setMapCenter } = houseSlice.actions;
+export const { setQuery, setMapCenter, setIsDrag } = houseSlice.actions;
 
 export const fetchHouses = createAsyncThunk(
   "fetchHouses",

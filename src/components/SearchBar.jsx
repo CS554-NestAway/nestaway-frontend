@@ -3,7 +3,7 @@ import api, { GetUniqueStates } from "../api";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { useDispatch, useSelector } from "react-redux";
-import { searchHousesByState, setQuery } from "../store/houseSlice";
+import { searchHousesByState, setIsDrag, setQuery } from "../store/houseSlice";
 import moment from "moment";
 
 const SearchBar = () => {
@@ -44,7 +44,7 @@ const SearchBar = () => {
         <>
           <Dropdown
             className="flex justify-center items-center rounded-xl bg-accent1 text-accent2 hover:bg-secondary min-w-64 w-64 px-6 focus:shadow-none focus-visible:outline-none"
-            panelClassName="bg-accent1 text-accent2"
+            // panelClassName="bg-accent1 text-accent2"
             value={query.state}
             options={
               Array.isArray(uniqueStates) &&
@@ -112,6 +112,7 @@ const SearchBar = () => {
               !moment(query.checkOut).isValid()
             }
             onClick={() => {
+              dispatch(setIsDrag(false));
               dispatch(searchHousesByState());
             }}
           >

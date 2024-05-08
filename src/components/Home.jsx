@@ -6,6 +6,7 @@ import ThemeContext from "../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHouses, setMapCenter } from "../store/houseSlice";
+import { checkIfAdminAsync } from "../store/authSlice";
 
 const Home = () => {
   const [distances, setDistances] = useState({});
@@ -16,6 +17,9 @@ const Home = () => {
   const mapCenter = useSelector((state) => state.houses.mapCenter);
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkIfAdminAsync());
+  }, [dispatch]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -78,7 +82,7 @@ const Home = () => {
   }, [calculateDistance, houseData, mapCenter]);
 
   return (
-    <div className={`font-didact ${theme === "light" ? "" : "bg-black"}`}>
+    <div className={`font-didact bg-secondary text-accent2 h-[91.5vh]`}>
       {view === "list" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
           {houseData &&
@@ -86,7 +90,7 @@ const Home = () => {
               <Link
                 key={house._id}
                 to={`/house/${house._id}`}
-                className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer"
+                className="bg-accent1  shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer"
               >
                 <Carousel
                   showThumbs={false}
@@ -127,7 +131,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="h-full">
-          {houseData && mapCenter && <Geoview data={houseData} />}
+          <Geoview data={houseData} />
         </div>
       )}
 
