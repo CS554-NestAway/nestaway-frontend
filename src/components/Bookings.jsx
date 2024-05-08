@@ -51,7 +51,7 @@ export default function Bookings() {
                     setBookingsInfo(bookingsResponse.data.data);
                     setLoading(false);
                 }
-                fetchData();
+                await fetchData();
             }
         }
         if (data.success && status === 'rejected') {
@@ -65,7 +65,7 @@ export default function Bookings() {
                     setBookingsInfo(bookingsResponse.data.data);
                     setLoading(false);
                 }
-                fetchData();
+                await fetchData();
             }
         }
     }
