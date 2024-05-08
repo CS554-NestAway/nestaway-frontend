@@ -4,6 +4,20 @@ import { doCreateUserWithEmailAndPassword } from '../firebase/FirebaseFunctions'
 import { AuthContext } from '../contexts/AuthContext';
 import SocialSignIn from './SocialSignIn';
 
+async function sendSignUpEmail(email, displayName) {
+  const response = await fetch('http://localhost:8080/sendemail/accemail', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, displayName }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to send email');
+  }
+}
+
 function SignUp() {
   const { currentUser } = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState('');
@@ -22,6 +36,7 @@ function SignUp() {
         passwordOne.value,
         displayName.value
       );
+      await sendSignUpEmail(email.value, displayName.value);
     } catch (error) {
       alert(error);
     }

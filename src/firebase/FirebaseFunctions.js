@@ -32,17 +32,6 @@ import {
         console.error("Error updating profile:", error.message);
         return; 
     }
-
-    try {
-        await axios.post("http://localhost:8080/user/newuser", {
-            name: displayName,
-            email: user.email 
-        });
-        console.log("User created and profile updated successfully.");
-        await doSignOut();
-    } catch (error) {
-        console.error("Error posting user data:", error.message);
-    }
 }
 async function updateUserProfile(displayName) {
   const auth = getAuth();
