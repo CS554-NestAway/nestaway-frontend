@@ -13,6 +13,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import { memo } from "react";
 import useCommon from "./utils/useCommon";
 import ListinDetail from "./components/ListinDetail";
+import GuestBookings from "./components/GuestBookings";
 
 const CommonHook = memo(() => {
   useCommon();
@@ -37,6 +38,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/account" element={<UserAccount />} />
               <Route path="/payment" element={<PaymentGateway />} />
+              <Route path="/guest/bookings" element={<GuestBookings />} />
             </Routes>
           </Router>
         </NotificationProvider>
