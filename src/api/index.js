@@ -13,6 +13,7 @@ export const ApproveHouse = "/host/approve/";
 export const RejectHouse = "/host/reject/";
 export const CheckAdmin = "/host/checkadmin";
 export const GetSearchByLatLng = "/search/searchByLatLng/";
+export const TripURL = "/trip/";
 
 export default axios.create({
   timeout: 60000,

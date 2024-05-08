@@ -11,9 +11,11 @@ import {
   initialPolicies,
   initialRules,
 } from "../../constants";
-import api, { GetHouseDetails, GetHousesByHost, HostURL } from "../../api";
+import { GetHouseDetails, GetHousesByHost, HostURL } from "../../api";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 const Host = () => {
   const { currentUser } = useContext(AuthContext);
   const [wizardVisible, setWizardVisible] = useState(false);
@@ -43,28 +45,43 @@ const Host = () => {
     setIsUpdateMode(false);
   }, []);
 
-  const handleUpdateListing = useCallback((id) => {
-    api
-      .get(GetHouseDetails + id)
-      .then((response) => {
-        setHouseDetails(response.data);
-        setWizardVisible(true);
-        setIsUpdateMode(true);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  const handleUpdateListing = useCallback(
+    (id) => {
+      let headers = {};
+      if (currentUser) {
+        headers = {
+          Authorization: `Bearer ${currentUser.accessToken}`,
+        };
+      }
+      axios
+        .get(BaseURL + GetHouseDetails + id, { headers })
+        .then((response) => {
+          setHouseDetails(response.data);
+          setWizardVisible(true);
+          setIsUpdateMode(true);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    [currentUser]
+  );
 
   const handleCloseWizard = useCallback(() => {
+    let headers = {};
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
     setWizardVisible(false);
     setHouseDetails(null);
-    api
-      .get(GetHousesByHost)
+    axios
+      .get(BaseURL + GetHousesByHost, { headers })
       .then((response) => {
         setHouseData(response.data);
-        api
-          .get(HostURL)
+        axios
+          .get(BaseURL + HostURL, { headers })
           .then((response) => {
             setListingData(response.data);
           })
@@ -75,20 +92,26 @@ const Host = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
+    let headers = {};
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
     toggleSearchVisible(false);
-    api
-      .get(GetHousesByHost)
+    axios
+      .get(BaseURL + GetHousesByHost, { headers })
       .then((response) => {
         setHouseData(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-    api
-      .get(HostURL)
+    axios
+      .get(BaseURL + HostURL, { headers })
       .then((response) => {
         setListingData(response.data);
       })
@@ -98,7 +121,7 @@ const Host = () => {
     return () => {
       toggleSearchVisible(true);
     };
-  }, []);
+  }, [currentUser, toggleSearchVisible]);
 
   if (!currentUser) {
     return <Navigate to="/" />;
