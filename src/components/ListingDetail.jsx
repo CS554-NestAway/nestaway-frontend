@@ -186,8 +186,9 @@ const ListingDetail = () => {
             </div>
             <div className="flex items-center mb-4">
               <Cigarette
-                className={`text-${!rules.smoking ? "error" : "primary"
-                  } text-3xl mr-2`}
+                className={`text-${
+                  !rules.smoking ? "error" : "primary"
+                } text-3xl mr-2`}
               />
               <span className="text-lg font-semibold">
                 {!rules.smoking ? "No Smoking" : "Smoking Allowed"}
@@ -195,8 +196,9 @@ const ListingDetail = () => {
             </div>
             <div className="flex items-center">
               <PawPrint
-                className={`text-${!rules.pets ? "error" : "primary"
-                  } text-3xl mr-2`}
+                className={`text-${
+                  !rules.pets ? "error" : "primary"
+                } text-3xl mr-2`}
               />
               <span className="text-lg font-semibold">
                 {rules.pets ? "Pets Allowed" : "No Pets Allowed"}
@@ -237,6 +239,7 @@ const ListingDetail = () => {
                 <Calendar
                   inputClassName="w-fit h-fit bg-accent1 rounded-lg border-primary border-2 px-4 py-2 text-accent2 focus:shadow-none focus-visible:outline-none"
                   placeholder="Check-In"
+                  minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
                   value={bookingForm.checkIn}
                   onChange={(e) =>
                     setBookingForm((prevValue) => ({
@@ -255,12 +258,12 @@ const ListingDetail = () => {
                 <div className="font-bold">Check In:</div>
                 <Calendar
                   minDate={
-                    bookingForm.startDate
+                    bookingForm.checkIn
                       ? new Date(
-                        new Date(bookingForm.startDate).setDate(
-                          new Date(bookingForm.startDate).getDate() + 1
+                          new Date(bookingForm.checkIn).setDate(
+                            new Date(bookingForm.checkIn).getDate() + 1
+                          )
                         )
-                      )
                       : null
                   }
                   inputClassName="w-fit h-fit bg-accent1 rounded-lg border-primary border-2 px-4 py-2 text-accent2 focus:shadow-none focus-visible:outline-none"
@@ -278,10 +281,11 @@ const ListingDetail = () => {
             </div>
             <button
               className={`text-accent1 rounded-lg ml-auto h-fit p-2
-              ${!isFormValid()
+              ${
+                !isFormValid()
                   ? "bg-primary cursor-not-allowed"
                   : "bg-primary hover:bg-action"
-                }`}
+              }`}
               onClick={handleBookingSubmit}
               disabled={!isFormValid()}
             >

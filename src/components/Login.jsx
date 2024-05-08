@@ -7,16 +7,22 @@ import {
   doPasswordReset,
 } from "../firebase/FirebaseFunctions";
 import ThemeContext from "../contexts/ThemeContext";
+import { checkIfAdminAsync } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 function Login() {
   const { currentUser } = useContext(AuthContext);
   const { toggleSearchVisible } = useContext(ThemeContext);
+  const dispatch = useDispatch();
   const handleLogin = async (event) => {
     event.preventDefault();
     let { email, password } = event.target.elements;
 
     try {
       await doSignInWithEmailAndPassword(email.value, password.value);
+      setTimeout(() => {
+        dispatch(checkIfAdminAsync());
+      }, 2000);
     } catch (error) {
       alert(error);
     }
