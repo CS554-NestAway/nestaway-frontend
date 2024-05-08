@@ -8,7 +8,7 @@ ENV VITE_BASE_URL=${VITE_BASE_URL}
 WORKDIR /app
 
 COPY package.json ./
-COPY package-lock.json ./
+# COPY package-lock.json ./
 RUN npm install
 
 COPY . .
