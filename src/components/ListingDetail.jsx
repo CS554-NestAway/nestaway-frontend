@@ -92,7 +92,7 @@ const ListingDetail = () => {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    console.log(bookingForm);
+    // console.log(bookingForm);
     // Add your booking Navigation here
   };
   if (!currentUser) {

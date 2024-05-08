@@ -1,18 +1,17 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import api from "../api";
-import { AuthContext } from "../contexts/AuthContext";
+import { useSelector } from "react-redux";
 
 const useCommon = () => {
   const BaseURL = import.meta.env.VITE_BASE_URL;
-  const { currentUser } = useContext(AuthContext);
+  // const { currentUser } = useContext(AuthContext);
+  const currentUserRedux = useSelector((state) => state.auth.currentUser);
   // console.log(currentUser);
-  //   useEffect(() => {
-  //     console.log("useCommon");
-  //   }, []);
 
   useEffect(() => {
     const isAbsoluteURLRegex = /^(?:\w+:)\/\//;
-    const authToken = currentUser?.accessToken;
+    let authToken = "";
+    if (currentUserRedux) authToken = currentUserRedux?.accessToken;
 
     api.interceptors.request.use(
       (config) => {
@@ -23,9 +22,9 @@ const useCommon = () => {
         if (!authToken) {
           config.headers.Authorization = "";
         } else {
-          console.log(authToken);
+          // console.log(authToken);
           config.headers.Authorization = `Bearer ${authToken}`;
-          console.log(config.headers);
+          // console.log(config.headers);
         }
         return config;
       },
@@ -39,7 +38,7 @@ const useCommon = () => {
         return Promise.reject(error);
       }
     );
-  }, [BaseURL, currentUser]);
+  }, [BaseURL, currentUserRedux]);
 };
 
 export default useCommon;

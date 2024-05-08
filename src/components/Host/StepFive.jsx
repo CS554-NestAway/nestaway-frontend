@@ -4,7 +4,7 @@ import { Dialog } from "primereact/dialog";
 import ListingPreview from "./ListingPreview";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import PropTypes from "prop-types";
-import api, { HostURL } from "../../api";
+import api, { GetHouseDetails, HostURL } from "../../api";
 
 const StepFive = ({ house, accept, mode }) => {
   const [preview, setPreview] = useState(false);
@@ -26,7 +26,7 @@ const StepFive = ({ house, accept, mode }) => {
     };
     if (mode) {
       await api
-        .put(`${HostURL}${house._id}`, data)
+        .put(`${GetHouseDetails}${house._id}`, data)
         .then(() => {
           showToast("success", house.houseType, `Successfully Updated!`);
           accept();
@@ -36,7 +36,7 @@ const StepFive = ({ house, accept, mode }) => {
         });
     } else {
       await api
-        .post(HostURL, data)
+        .post(GetHouseDetails, data)
         .then(() => {
           showToast("success", house.houseType, `Successfully Published!`);
           accept();

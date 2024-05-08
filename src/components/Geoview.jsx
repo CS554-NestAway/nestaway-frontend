@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   searchHousesByState,
+  setIsDrag,
   setMapCenter,
   setQuery,
 } from "../store/houseSlice";
@@ -25,10 +26,9 @@ import {
 const Geoview = ({ data }) => {
   const { theme } = useContext(ThemeContext);
   const map = useRef(null);
-  const query = useSelector((state) => state.houses.query);
   const [mapZoom, setMapZoom] = useState(10);
   const mapCenter = useSelector((state) => state.houses.mapCenter);
-  const [isDrag, setIsDrag] = useState(true);
+  const isDrag = useSelector((state) => state.houses.isDrag);
 
   const dispatch = useDispatch();
 
@@ -47,7 +47,7 @@ const Geoview = ({ data }) => {
   };
 
   const handleDragEnd = (event) => {
-    setIsDrag(true);
+    dispatch(setIsDrag(true));
     const center = event.target.getCenter();
     dispatch(
       setQuery({
@@ -77,7 +77,7 @@ const Geoview = ({ data }) => {
   };
 
   useEffect(() => {
-    if (map.current) {
+    if (map.current && !isDrag) {
       if (data[0]?.address.location?.coordinates) {
         const { coordinates } = data[0].address.location;
         const latLng = L.latLng(coordinates[1], coordinates[0]);
@@ -108,7 +108,7 @@ const Geoview = ({ data }) => {
     <MapContainer
       ref={map}
       zoomControl={true}
-      className="h-[92vh] z-10 font-didact"
+      className="h-[91.5vh] z-10 font-didact"
       dragging={true}
       minZoom={3}
       maxZoom={17}
