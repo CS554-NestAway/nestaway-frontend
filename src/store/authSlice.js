@@ -22,9 +22,11 @@ export const authSlice = createSlice({
       state.error = null;
     });
     builder.addCase(setCurrentUserAsync.fulfilled, (state, action) => {
-      const { uid, displayName, email, accessToken } = action.payload;
-      state.currentUser = { uid, displayName, email, accessToken };
-      state.loading = false;
+      if (action.payload) {
+        const { uid, displayName, email, accessToken } = action.payload;
+        state.currentUser = { uid, displayName, email, accessToken };
+        state.loading = false;
+      }
     });
     builder.addCase(setCurrentUserAsync.rejected, (state, action) => {
       state.loading = false;

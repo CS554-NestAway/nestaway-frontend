@@ -56,7 +56,6 @@ const ListingDetail = () => {
   const navigateTo = useNavigate();
   const { id } = useParams();
   const { toggleSearchVisible } = useContext(ThemeContext);
-  const { currentUser } = useContext(AuthContext);
   const [houseDetails, setHouseDetails] = useState(null);
   const [bookingForm, setBookingForm] = useState({
     houseid: id,
@@ -97,9 +96,6 @@ const ListingDetail = () => {
     // Add your booking Navigation here
     return navigateTo("/payment", { state: { bookingForm } });
   };
-  if (!currentUser) {
-    return <Navigate to="/" />;
-  }
   if (!houseDetails) {
     return <div>Loading...</div>; // Add a loading state if data is not yet available
   }

@@ -4,24 +4,20 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { Carousel } from "react-responsive-carousel";
 import ThemeContext from "../contexts/ThemeContext";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  searchHousesByState,
-  setIsDrag,
-  setMapCenter,
-  setQuery,
-} from "../store/houseSlice";
+import { searchHousesByState, setIsDrag, setQuery } from "../store/houseSlice";
 
 const Geoview = ({ data }) => {
   const { theme } = useContext(ThemeContext);
@@ -75,15 +71,17 @@ const Geoview = ({ data }) => {
 
     return null;
   };
+  const getTileLayerClassName = useCallback(() => {
+    return theme === "light" ? "customLayerLight" : "customLayerDark";
+  }, [theme]);
 
   useEffect(() => {
     if (map.current && !isDrag) {
       if (data[0]?.address.location?.coordinates) {
         const { coordinates } = data[0].address.location;
         const latLng = L.latLng(coordinates[1], coordinates[0]);
-
         map.current.panTo(latLng);
-        map.current.setZoom(10);
+        map.current.setZoom(8);
       }
     }
   }, [data, isDrag]);
@@ -110,23 +108,25 @@ const Geoview = ({ data }) => {
       zoomControl={true}
       className="h-[91.5vh] z-10 font-didact"
       dragging={true}
-      minZoom={3}
+      minZoom={5}
       maxZoom={17}
       zoom={mapZoom}
-      center={mapCenter}
+      center={mapCenter || [40.757957305672726, -74.0471129340117]}
+      maxBounds={[
+        [51, -128],
+        [22, -64],
+      ]}
     >
+      <RerenderMap />
       <DragEvents />
       <TileLayer
-        url={
-          theme === "light"
-            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
-            : "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-        }
-        attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+        className={"customLayerLight"}
+        url={"http://{s}.tile.osm.org/{z}/{x}/{y}.png"}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
       <MarkerClusterGroup chunkedLoading>
-        {Array.isArray(data) &&
+        {data &&
           data.map((house) => (
             <Marker
               key={house._id}
@@ -202,3 +202,13 @@ Geoview.propTypes = {
 };
 
 export default Geoview;
+
+const RerenderMap = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+  }, [map]);
+};
