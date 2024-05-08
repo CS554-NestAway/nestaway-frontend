@@ -13,15 +13,15 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+# EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "dev"]
 
-# RUN npm run build
+RUN npm run build
 
-# RUN npm install -g serve
+RUN npm install -g serve
 
 
-# CMD ["serve", "-s", "dist", "-l", "80"]
+CMD ["serve", "-s", "dist", "-l", "80"]
 
-# EXPOSE 80
+EXPOSE 80
