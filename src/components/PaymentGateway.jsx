@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import PaymentButton from "./PaymentButton";
-import { useNavigate } from "react-router-dom";
-import api, { HostURL, BookingURL, CreditsURL } from "../api";
+import { useNavigate, useLocation } from "react-router-dom";
+import api, { GetHouseDetails, BookingURL, CreditsURL } from "../api";
 import { AuthContext } from "../contexts/AuthContext";
 import TermsAndConditionsModule from "./TermsAndConditionsModule";
 
-function PaymentGateway({ checkIn, checkOut, houseId }) {
+function PaymentGateway() {
     const navigateTo = useNavigate();
-    checkIn = "2099-07-23";
-    checkOut = "2099-07-24";
-    houseId = "6638decb7fc17dac33c92c41";
+    const location = useLocation();
+    const data = location.state?.bookingForm;
+    console.log(data);
+    const checkIn = data.checkIn.toString();
+    const checkOut = data.checkOut.toString();
+    const houseId = data.houseid;
     const [houseInfo, setHouseInfo] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState();
@@ -29,7 +32,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
             try {
                 const balanceResponse = await api.get(CreditsURL);
                 setCreditsBalance(balanceResponse.data);
-                const houseResponse = await api.get(HostURL + houseId);
+                const houseResponse = await api.get(GetHouseDetails + houseId);
                 const fetchedHouseInfo = houseResponse.data;
                 setHouseInfo(houseResponse.data);
 
@@ -71,7 +74,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
     }
 
     if (!currentUser) {
-        return <p>You don't login</p>
+        return navigateTo("/");
     }
     //   const changePaidState = () => {
     //     setPaid(true);
