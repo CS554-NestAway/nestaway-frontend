@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import api, { GetHouseDetails, HostURL } from "../api";
 import ThemeContext from "../contexts/ThemeContext";
 import { Rating } from "primereact/rating";
@@ -31,6 +31,7 @@ import {
   Wind,
 } from "@phosphor-icons/react";
 import moment from "moment";
+import { AuthContext } from "../contexts/AuthContext";
 
 const icons = {
   wifi: <WifiHigh className="text-primary text-2xl" />,
@@ -54,6 +55,7 @@ const icons = {
 const ListingDetail = () => {
   const { id } = useParams();
   const { toggleSearchVisible } = useContext(ThemeContext);
+  const { currentUser } = useContext(AuthContext);
   const [houseDetails, setHouseDetails] = useState(null);
   const [bookingForm, setBookingForm] = useState({
     houseid: id,
@@ -93,7 +95,9 @@ const ListingDetail = () => {
     console.log(bookingForm);
     // Add your booking Navigation here
   };
-
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
   if (!houseDetails) {
     return <div>Loading...</div>; // Add a loading state if data is not yet available
   }
