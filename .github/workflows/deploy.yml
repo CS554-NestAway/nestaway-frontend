@@ -26,6 +26,9 @@ jobs:
           build-args: |
             VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}
 
+  ec2:
+    runs-on: ubuntu-latest
+    steps:
       - name: ec2
         uses: appleboy/ssh-action@v1.0.3
         with:
