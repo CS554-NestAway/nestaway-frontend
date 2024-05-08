@@ -131,7 +131,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="h-full">
-          {houseData && mapCenter && <Geoview data={houseData} />}
+          <Geoview data={houseData} />
         </div>
       )}
 

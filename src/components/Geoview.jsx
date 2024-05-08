@@ -4,6 +4,7 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -16,12 +17,7 @@ import millify from "millify";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  searchHousesByState,
-  setIsDrag,
-  setMapCenter,
-  setQuery,
-} from "../store/houseSlice";
+import { searchHousesByState, setIsDrag, setQuery } from "../store/houseSlice";
 
 const Geoview = ({ data }) => {
   const { theme } = useContext(ThemeContext);
@@ -110,11 +106,16 @@ const Geoview = ({ data }) => {
       zoomControl={true}
       className="h-[91.5vh] z-10 font-didact"
       dragging={true}
-      minZoom={3}
+      minZoom={5}
       maxZoom={17}
       zoom={mapZoom}
-      center={mapCenter}
+      center={mapCenter || [40.757957305672726, -74.0471129340117]}
+      maxBounds={[
+        [51, -128],
+        [22, -64],
+      ]}
     >
+      <RerenderMap />
       <DragEvents />
       <TileLayer
         url={
@@ -126,7 +127,7 @@ const Geoview = ({ data }) => {
       />
 
       <MarkerClusterGroup chunkedLoading>
-        {Array.isArray(data) &&
+        {data &&
           data.map((house) => (
             <Marker
               key={house._id}
@@ -202,3 +203,13 @@ Geoview.propTypes = {
 };
 
 export default Geoview;
+
+const RerenderMap = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+  }, [map]);
+};

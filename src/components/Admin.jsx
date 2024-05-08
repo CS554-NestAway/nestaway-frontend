@@ -28,13 +28,11 @@ const Admin = () => {
 
   const handleApprove = useCallback((houseId) => {
     api.get(ApproveHouse + houseId).then((response) => {
-      console.log(response.data);
       fetchData();
     });
   }, []);
   const handleReject = useCallback((houseId) => {
     api.get(RejectHouse + houseId).then((response) => {
-      console.log(response.data);
       fetchData();
     });
   }, []);
