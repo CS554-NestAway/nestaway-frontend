@@ -59,7 +59,7 @@ export default function Bookings() {
                     setTripsInfo(tripsResponse.data.data);
                     setLoading(false);
                 }
-                fetchData();
+                await fetchData();
             }
         } else if (data.success && numberOfDays < settings.cancellationDays) {
             const returnCreditsToUser = totalPrice * (settings.cancellationPercent / 100);
@@ -77,7 +77,7 @@ export default function Bookings() {
                     setTripsInfo(tripsResponse.data.data);
                     setLoading(false);
                 }
-                fetchData();
+                await fetchData();
             }
         }
         if (status === 'change') {
