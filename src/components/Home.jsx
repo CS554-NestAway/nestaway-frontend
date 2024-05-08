@@ -17,9 +17,6 @@ const Home = () => {
   const mapCenter = useSelector((state) => state.houses.mapCenter);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(checkIfAdminAsync());
-  }, [dispatch]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {

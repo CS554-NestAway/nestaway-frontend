@@ -1,44 +1,43 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import api from "../api";
 import { useSelector } from "react-redux";
+import { AuthContext } from "../contexts/AuthContext";
 
 const useCommon = () => {
   const BaseURL = import.meta.env.VITE_BASE_URL;
-  // const { currentUser } = useContext(AuthContext);
-  const currentUserRedux = useSelector((state) => state.auth.currentUser);
-  // console.log(currentUser);
+  const { currentUser } = useContext(AuthContext);
 
+  let numberOfAjaxCAllPending = 0;
   useEffect(() => {
     const isAbsoluteURLRegex = /^(?:\w+:)\/\//;
     let authToken = "";
-    if (currentUserRedux) authToken = currentUserRedux?.accessToken;
+    if (currentUser) authToken = currentUser?.accessToken;
 
     api.interceptors.request.use(
       (config) => {
+        numberOfAjaxCAllPending++;
         if (!isAbsoluteURLRegex.test(config.url)) {
           config.url = BaseURL + config.url;
         }
 
-        if (!authToken) {
-          config.headers.Authorization = "";
-        } else {
-          // console.log(authToken);
-          config.headers.Authorization = `Bearer ${authToken}`;
-          // console.log(config.headers);
-        }
+        config.headers.Authorization = `Bearer ${authToken || ""}`;
+        // console.log(config.headers);
+        config.headers.RequestCount = numberOfAjaxCAllPending;
         return config;
       },
       (error) => Promise.reject(error)
     );
     api.interceptors.response.use(
       (response) => {
+        numberOfAjaxCAllPending--;
         return response;
       },
       (error) => {
+        numberOfAjaxCAllPending--;
         return Promise.reject(error);
       }
     );
-  }, [BaseURL, currentUserRedux]);
+  }, [BaseURL, currentUser, numberOfAjaxCAllPending]);
 };
 
 export default useCommon;
