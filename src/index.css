@@ -91,3 +91,11 @@ html[data-theme="dark"] {
 .p-dropdown-item.p-focus {
   @apply bg-secondary;
 }
+.customLayerDark {
+  filter: invert(1) sepia(1) hue-rotate(160deg) grayscale(0.5) contrast(0.55);
+}
+
+.customLayerLight {
+  filter: invert(0) sepia(1) brightness(1.2) hue-rotate(170deg) saturate(20)
+    grayscale(1) contrast(0.8);
+}

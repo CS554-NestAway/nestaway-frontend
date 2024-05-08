@@ -55,7 +55,6 @@ const icons = {
 const ListingDetail = () => {
   const { id } = useParams();
   const { toggleSearchVisible } = useContext(ThemeContext);
-  const { currentUser } = useContext(AuthContext);
   const [houseDetails, setHouseDetails] = useState(null);
   const [bookingForm, setBookingForm] = useState({
     houseid: id,
@@ -95,9 +94,6 @@ const ListingDetail = () => {
     // console.log(bookingForm);
     // Add your booking Navigation here
   };
-  if (!currentUser) {
-    return <Navigate to="/" />;
-  }
   if (!houseDetails) {
     return <div>Loading...</div>; // Add a loading state if data is not yet available
   }
