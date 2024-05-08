@@ -28,13 +28,9 @@ const Map = ({ street, position }) => {
       center={position}
     >
       <TileLayer
-        url={
-          theme === "light"
-            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
-            : "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-        }
+        className={"customLayerLight"}
+        url={"http://{s}.tile.osm.org/{z}/{x}/{y}.png"}
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        className="customLayerDark"
       />
       <Marker position={position} icon={markers()}>
         {/* <Popup className="">{street}</Popup> */}

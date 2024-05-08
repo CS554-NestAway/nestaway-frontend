@@ -11,7 +11,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { Carousel } from "react-responsive-carousel";
 import ThemeContext from "../contexts/ThemeContext";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
 import PropTypes from "prop-types";
@@ -71,15 +71,17 @@ const Geoview = ({ data }) => {
 
     return null;
   };
+  const getTileLayerClassName = useCallback(() => {
+    return theme === "light" ? "customLayerLight" : "customLayerDark";
+  }, [theme]);
 
   useEffect(() => {
     if (map.current && !isDrag) {
       if (data[0]?.address.location?.coordinates) {
         const { coordinates } = data[0].address.location;
         const latLng = L.latLng(coordinates[1], coordinates[0]);
-
         map.current.panTo(latLng);
-        map.current.setZoom(10);
+        map.current.setZoom(8);
       }
     }
   }, [data, isDrag]);
@@ -118,12 +120,9 @@ const Geoview = ({ data }) => {
       <RerenderMap />
       <DragEvents />
       <TileLayer
-        url={
-          theme === "light"
-            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
-            : "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-        }
-        attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+        className={"customLayerLight"}
+        url={"http://{s}.tile.osm.org/{z}/{x}/{y}.png"}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
       <MarkerClusterGroup chunkedLoading>
