@@ -3,12 +3,13 @@ import PaymentButton from "./PaymentButton";
 import { useNavigate } from "react-router-dom";
 import api, { HostURL, BookingURL, CreditsURL } from "../api";
 import { AuthContext } from "../contexts/AuthContext";
+import TermsAndConditionsModule from "./TermsAndConditionsModule";
 
 function PaymentGateway({ checkIn, checkOut, houseId }) {
     const navigateTo = useNavigate();
-    checkIn = "2099-07-04";
-    checkOut = "2099-07-05";
-    houseId = "6638e7647fc17dac33c92c42";
+    checkIn = "2099-07-05";
+    checkOut = "2099-07-06";
+    houseId = "6638decb7fc17dac33c92c41";
     const [houseInfo, setHouseInfo] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState();
@@ -21,6 +22,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
     //   const [paymentInfo, setPaymentInfo] = useState();
     const [creditsBalance, setCreditsBalance] = useState(0);
     const [enoughBalance, setEnoughBalance] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { currentUser } = useContext(AuthContext);
     useEffect(() => {
         const fetchData = async () => {
@@ -78,6 +80,13 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
     //   const getPaymentInfo = (paymentInfo) => {
     //     setPaymentInfo(paymentInfo);
     //   };
+    const openModule = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModule = () => {
+        setIsModalOpen(false);
+    };
 
     const onClickComfirm = async (e) => {
         e.preventDefault();
@@ -117,15 +126,16 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                             </div>
                         </div>
                         {/* Terms and Conditions */}
-                        <p className="mt-10 text-center text-sm font-semibold text-gray-500">
-                            By placing this order you agree to the{" "}
+                        <div className="mt-10 text-center text-sm font-semibold text-gray-500">
+                            By placing this order you agree to the{' '}
                             <a
-                                href="#"
-                                className="whitespace-nowrap text-teal-400 underline hover:text-teal-600"
+                                onClick={openModule}
+                                className="whitespace-nowrap text-teal-400 underline hover:text-teal-600 cursor-pointer"
                             >
                                 Terms and Conditions
                             </a>
-                        </p>
+                        </div>
+                        {isModalOpen ? <TermsAndConditionsModule isOpen={openModule} onClose={closeModule} /> : <></>}
                         {/* Place Order Button */}
                         <button
                             onClick={onClickComfirm}
@@ -170,7 +180,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                             <li className="flex justify-between">
                                 <div className="inline-flex">
                                     <img
-                                        src="https://a0.muscache.com/im/pictures/a67f415b-bf4f-4e87-9f59-fab05d00078c.jpg?aki_policy=large"
+                                        src={houseInfo.photos.main}
                                         alt=""
                                         className="max-h-16"
                                     />
