@@ -7,8 +7,8 @@ import TermsAndConditionsModule from "./TermsAndConditionsModule";
 
 function PaymentGateway({ checkIn, checkOut, houseId }) {
     const navigateTo = useNavigate();
-    checkIn = "2099-07-05";
-    checkOut = "2099-07-06";
+    checkIn = "2099-07-22";
+    checkOut = "2099-07-23";
     houseId = "6638decb7fc17dac33c92c41";
     const [houseInfo, setHouseInfo] = useState();
     const [loading, setLoading] = useState(true);
@@ -49,7 +49,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                 const sf = st * 0.142;
                 setServiceFee(parseFloat(sf.toFixed(2)));
 
-                const tp = st + t + sf;
+                const tp = st + t + sf + 100;
                 setTotalPrice(parseFloat(tp.toFixed(2)));
                 const enoughResponse = await api.post(CreditsURL + 'checkCredits', { creditsToCheck: parseFloat(tp.toFixed(2)) });
                 setEnoughBalance(enoughResponse.data);
@@ -166,7 +166,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                     <div>
                         {/* Background Image */}
                         <img
-                            src="https://a0.muscache.com/im/pictures/a67f415b-bf4f-4e87-9f59-fab05d00078c.jpg?aki_policy=large"
+                            src={houseInfo.photos.main}
                             alt=""
                             className="absolute inset-0 h-full w-full object-cover"
                         />
@@ -176,7 +176,6 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                     {/* Order Details */}
                     <div className="relative">
                         <ul className="space-y-5">
-                            {/* Order Item 1 */}
                             <li className="flex justify-between">
                                 <div className="inline-flex">
                                     <img
