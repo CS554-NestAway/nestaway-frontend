@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import api, { GetHouseDetails, HostURL } from "../api";
 import ThemeContext from "../contexts/ThemeContext";
 import { Rating } from "primereact/rating";
@@ -53,6 +53,7 @@ const icons = {
 };
 
 const ListingDetail = () => {
+  const navigateTo = useNavigate();
   const { id } = useParams();
   const { toggleSearchVisible } = useContext(ThemeContext);
   const { currentUser } = useContext(AuthContext);
@@ -92,8 +93,9 @@ const ListingDetail = () => {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    // console.log(bookingForm);
+    console.log(bookingForm);
     // Add your booking Navigation here
+    return navigateTo("/payment", { state: { bookingForm } });
   };
   if (!currentUser) {
     return <Navigate to="/" />;
@@ -188,9 +190,8 @@ const ListingDetail = () => {
             </div>
             <div className="flex items-center mb-4">
               <Cigarette
-                className={`text-${
-                  !rules.smoking ? "error" : "primary"
-                } text-3xl mr-2`}
+                className={`text-${!rules.smoking ? "error" : "primary"
+                  } text-3xl mr-2`}
               />
               <span className="text-lg font-semibold">
                 {!rules.smoking ? "No Smoking" : "Smoking Allowed"}
@@ -198,9 +199,8 @@ const ListingDetail = () => {
             </div>
             <div className="flex items-center">
               <PawPrint
-                className={`text-${
-                  !rules.pets ? "error" : "primary"
-                } text-3xl mr-2`}
+                className={`text-${!rules.pets ? "error" : "primary"
+                  } text-3xl mr-2`}
               />
               <span className="text-lg font-semibold">
                 {rules.pets ? "Pets Allowed" : "No Pets Allowed"}
@@ -261,10 +261,10 @@ const ListingDetail = () => {
                   minDate={
                     bookingForm.startDate
                       ? new Date(
-                          new Date(bookingForm.startDate).setDate(
-                            new Date(bookingForm.startDate).getDate() + 1
-                          )
+                        new Date(bookingForm.startDate).setDate(
+                          new Date(bookingForm.startDate).getDate() + 1
                         )
+                      )
                       : null
                   }
                   inputClassName="w-fit h-fit bg-accent1 rounded-lg border-primary border-2 px-4 py-2 text-accent2 focus:shadow-none focus-visible:outline-none"
@@ -282,11 +282,10 @@ const ListingDetail = () => {
             </div>
             <button
               className={`text-accent1 rounded-lg ml-auto h-fit p-2
-              ${
-                !isFormValid()
+              ${!isFormValid()
                   ? "bg-primary cursor-not-allowed"
                   : "bg-primary hover:bg-action"
-              }`}
+                }`}
               onClick={handleBookingSubmit}
               disabled={!isFormValid()}
             >
