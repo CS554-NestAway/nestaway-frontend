@@ -1,15 +1,22 @@
 import React, { useEffect, useState, useContext } from 'react'
 import api, { BookingURL, CreditsURL } from '../api'
 import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 export default function Bookings() {
+    const navigateTo = useNavigate();
+    const [error, setError] = useState();
     const { currentUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [bookingsInfo, setBookingsInfo] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const bookingsResponse = await api.get(BookingURL + 'bookings');
-            setBookingsInfo(bookingsResponse.data.data);
-            setLoading(false);
+            try {
+                const bookingsResponse = await api.get(BookingURL + 'bookings');
+                setBookingsInfo(bookingsResponse.data.data);
+                setLoading(false);
+            } catch (e) {
+                setError(e);
+            }
         }
         fetchData();
     }, [])
@@ -18,22 +25,26 @@ export default function Bookings() {
         return <p>Loading...</p>;
     }
 
+    if (error) {
+        return <p>{error}</p>;
+    }
+
     if (!currentUser) {
-        return <p>You don't login</p>
+        return navigateTo("/");
     }
     if (bookingsInfo.length == 0) {
         return <p>You don't have any bookings</p>
     }
 
     const handleStatusToggle = async (houseId, bookingId, status, totalPrice, userId) => {
-        const {data} = await api.post(BookingURL + 'toggleStatus', {
+        const { data } = await api.post(BookingURL + 'toggleStatus', {
             houseId: houseId,
             bookingId: bookingId,
             status: status
         });
         totalPrice = Number(totalPrice);
         if (data.success && status === 'approved') {
-            const addCreditsResponse = await api.post(CreditsURL + 'add', {creditsToAdd: totalPrice});
+            const addCreditsResponse = await api.post(CreditsURL + 'add', { creditsToAdd: totalPrice });
             if (addCreditsResponse) {
                 const fetchData = async () => {
                     const bookingsResponse = await api.get(BookingURL + 'bookings');
