@@ -7,14 +7,14 @@ import TermsAndConditionsModule from "./TermsAndConditionsModule";
 
 function PaymentGateway({ checkIn, checkOut, houseId }) {
     const navigateTo = useNavigate();
-    checkIn = "2099-07-22";
-    checkOut = "2099-07-23";
+    checkIn = "2099-07-23";
+    checkOut = "2099-07-24";
     houseId = "6638decb7fc17dac33c92c41";
     const [houseInfo, setHouseInfo] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState();
     const [totalPrice, setTotalPrice] = useState(0);
-    const [taxes, setTaxes] = useState(0);
+    //const [taxes, setTaxes] = useState(0);
     const [serviceFee, setServiceFee] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
     const [nights, setNights] = useState(0);
@@ -43,13 +43,13 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                 const st = numberOfDays * fetchedHouseInfo.price;
                 setSubtotal(parseFloat(st.toFixed(2)));
 
-                const t = st * 0.06625;
-                setTaxes(parseFloat(t.toFixed(2)));
+                // const t = st * 0.06625;
+                // setTaxes(parseFloat(t.toFixed(2)));
 
                 const sf = st * 0.142;
                 setServiceFee(parseFloat(sf.toFixed(2)));
 
-                const tp = st + t + sf + 100;
+                const tp = st + sf + 100;
                 setTotalPrice(parseFloat(tp.toFixed(2)));
                 const enoughResponse = await api.post(CreditsURL + 'checkCredits', { creditsToCheck: parseFloat(tp.toFixed(2)) });
                 setEnoughBalance(enoughResponse.data);
@@ -202,7 +202,7 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                         {/* Total and VAT */}
                         <div className="space-y-2">
                             <p className="flex justify-between text-lg font-bold text-white">
-                                <span>Total price:</span>
+                                <span>Total price(including taxes):</span>
                                 <span>${totalPrice}</span>
                             </p>
                             <p className="flex justify-between text-sm font-medium text-white">
@@ -219,10 +219,10 @@ function PaymentGateway({ checkIn, checkOut, houseId }) {
                                 <span>Nestaway service fee:</span>
                                 <span>${serviceFee}</span>
                             </p>
-                            <p className="flex justify-between text-sm font-medium text-white">
+                            {/* <p className="flex justify-between text-sm font-medium text-white">
                                 <span>Taxes:</span>
                                 <span>${taxes}</span>
-                            </p>
+                            </p> */}
                         </div>
                     </div>
 
