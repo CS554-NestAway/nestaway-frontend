@@ -1,17 +1,36 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { Carousel } from "react-responsive-carousel";
 import ThemeContext from "../contexts/ThemeContext";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import millify from "millify";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  searchHousesByState,
+  setMapCenter,
+  setQuery,
+} from "../store/houseSlice";
 
-const Geoview = ({ position, data }) => {
+const Geoview = ({ data }) => {
   const { theme } = useContext(ThemeContext);
+  const map = useRef(null);
+  const query = useSelector((state) => state.houses.query);
+  const [mapZoom, setMapZoom] = useState(10);
+  const mapCenter = useSelector((state) => state.houses.mapCenter);
+  const [isDrag, setIsDrag] = useState(true);
+
+  const dispatch = useDispatch();
 
   const markers = (price) => {
     return new L.divIcon({
@@ -23,16 +42,80 @@ const Geoview = ({ position, data }) => {
     });
   };
 
+  const calculateRadius = (zoomLevel) => {
+    return Math.pow(2, 14 - zoomLevel) * 8;
+  };
+
+  const handleDragEnd = (event) => {
+    setIsDrag(true);
+    const center = event.target.getCenter();
+    dispatch(
+      setQuery({
+        state: "",
+        checkIn: "",
+        checkOut: "",
+        lat: center.lat,
+        lng: center.lng,
+        radius: calculateRadius(mapZoom),
+      })
+    );
+
+    dispatch(searchHousesByState());
+  };
+
+  const handleZoomChange = (event) => {
+    setMapZoom(event.target.getZoom());
+  };
+
+  const DragEvents = () => {
+    useMapEvents({
+      dragend: handleDragEnd,
+      zoomend: handleZoomChange,
+    });
+
+    return null;
+  };
+
+  useEffect(() => {
+    if (map.current) {
+      if (data[0]?.address.location?.coordinates) {
+        const { coordinates } = data[0].address.location;
+        const latLng = L.latLng(coordinates[1], coordinates[0]);
+
+        map.current.panTo(latLng);
+        map.current.setZoom(10);
+      }
+    }
+  }, [data, isDrag]);
+
+  // useEffect(() => {
+  //   if (Array.isArray(mapCenter)) {
+  //     dispatch(
+  //       setQuery({
+  //         state: "",
+  //         checkIn: "",
+  //         checkOut: "",
+  //         lat: mapCenter[1],
+  //         lng: mapCenter[0],
+  //         radius: calculateRadius(mapZoom),
+  //       })
+  //     );
+  //     dispatch(searchHousesByState());
+  //   }
+  // }, [dispatch, mapCenter, mapZoom]);
+
   return (
     <MapContainer
+      ref={map}
       zoomControl={true}
       className="h-[92vh] z-10 font-didact"
       dragging={true}
       minZoom={3}
       maxZoom={17}
-      zoom={10}
-      center={position}
+      zoom={mapZoom}
+      center={mapCenter}
     >
+      <DragEvents />
       <TileLayer
         url={
           theme === "light"
@@ -100,7 +183,6 @@ const Geoview = ({ position, data }) => {
 };
 
 Geoview.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,

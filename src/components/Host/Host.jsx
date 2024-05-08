@@ -71,7 +71,7 @@ const Host = () => {
     api
       .get(HostURL)
       .then((response) => {
-        setHouseData(response.data);
+        setHouseData(response.data.current);
       })
       .catch((error) => {
         console.error(error);
