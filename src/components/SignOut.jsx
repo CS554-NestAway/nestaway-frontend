@@ -4,7 +4,7 @@ import { doSignOut } from "../firebase/FirebaseFunctions";
 const SignOutButton = () => {
   return (
     <button
-      className="block relative font-didact text-accent2 transition-colors hover:bg-secondary px-6 py-2 w-full text-left"
+      className="w-full bg-primary text-white py-2 rounded-lg focus:outline-none hover:bg-action mt-2"
       type="button"
       onClick={doSignOut}
     >
@@ -14,27 +14,3 @@ const SignOutButton = () => {
 };
 
 export default SignOutButton;
-
-// import {doSignOut} from '../firebase/FirebaseFunctions';
-// import { useSelector, useDispatch } from 'react-redux';
-// import actions from '../actions'
-// import { useNavigate } from 'react-router-dom';
-// import '../App.css'
-// const SignOutButton = () => {
-
-// const dispatch = useDispatch();
-// const navigate= useNavigate()
-// const signOutRedux = () => {
-//   dispatch(actions.unsetUser())
-//   doSignOut();
-//   navigate('/')
-// }
-
-//   return (
-//     <button className='nav-link' type='button' onClick={signOutRedux}>
-//       Sign Out
-//     </button>
-//   );
-// };
-
-// export default SignOutButton;

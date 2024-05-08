@@ -12,6 +12,7 @@ import {
   initialRules,
 } from "../../constants";
 import api, { HostURL } from "../../api";
+import { Navigate } from "react-router-dom";
 
 const Host = () => {
   const { currentUser } = useContext(AuthContext);
@@ -81,6 +82,9 @@ const Host = () => {
     };
   }, []);
 
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
   return (
     <div
       className={`flex flex-col w-full h-screen px-20 py-4 font-didact gap-4 bg-accent1 text-accent2 ${

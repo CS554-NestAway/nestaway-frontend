@@ -1,17 +1,19 @@
-import {useContext} from 'react';
-import SocialSignIn from './SocialSignIn';
-import {Navigate} from 'react-router-dom';
-import {AuthContext} from '../contexts/AuthContext';
+import { useContext, useEffect } from "react";
+import SocialSignIn from "./SocialSignIn";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 import {
   doSignInWithEmailAndPassword,
-  doPasswordReset
-} from '../firebase/FirebaseFunctions';
+  doPasswordReset,
+} from "../firebase/FirebaseFunctions";
+import ThemeContext from "../contexts/ThemeContext";
 
 function Login() {
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
+  const { toggleSearchVisible } = useContext(ThemeContext);
   const handleLogin = async (event) => {
     event.preventDefault();
-    let {email, password} = event.target.elements;
+    let { email, password } = event.target.elements;
 
     try {
       await doSignInWithEmailAndPassword(email.value, password.value);
@@ -22,63 +24,80 @@ function Login() {
 
   const passwordReset = (event) => {
     event.preventDefault();
-    let email = document.getElementById('email').value;
+    let email = document.getElementById("email").value;
     if (email) {
       doPasswordReset(email);
-      alert('Password reset email was sent');
+      alert("Password reset email was sent");
     } else {
       alert(
-        'Please enter an email address below before you click the forgot password link'
+        "Please enter an email address below before you click the forgot password link"
       );
     }
   };
+
+  useEffect(() => {
+    toggleSearchVisible(false);
+
+    return () => {
+      toggleSearchVisible(true);
+    };
+  }, [toggleSearchVisible]);
+
   if (currentUser) {
-    return <Navigate to='/' />;
+    return <Navigate to="/" />;
   }
   return (
-    <div>
-      <div className='card'>
-        <h1>Log-In</h1>
-        <form className='form' onSubmit={handleLogin}>
-          <div className='form-group'>
-            <label>
+    <div className="flex justify-center bg-secondary items-center h-[91.5vh]">
+      <div className="border border-accent2 bg-accent1 text-accent2 shadow-lg rounded-lg p-8 w-96">
+        <div className="bg-primary text-accent1 py-4 px-8 mb-4 rounded-t-lg">
+          <h1 className="text-2xl">Log-In</h1>
+        </div>
+        <form className="space-y-4" onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="email" className="block">
               Email Address:
-              <br />
-              <input
-                name='email'
-                id='email'
-                type='email'
-                placeholder='Email'
-                required
-                autoFocus={true}
-              />
             </label>
-          </div>
-          <br />
-          <div className='form-group'>
-            <label>
-              Password:
-              <br />
-              <input
-                name='password'
-                type='password'
-                placeholder='Password'
-                autoComplete='off'
-                required
-              />
-            </label>
+            <input
+              name="email"
+              id="email"
+              type="email"
+              placeholder="Email"
+              required
+              autoFocus
+              className="w-full px-4 py-2 border bg-accent1 text-accent2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+            />
           </div>
 
-          <button className='button' type='submit'>
+          <div className="form-group">
+            <label htmlFor="password" className="block">
+              Password:
+            </label>
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              autoComplete="off"
+              required
+              className="w-full px-4 py-2 border bg-accent1 text-accent2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-primary text-white py-2 rounded-lg focus:outline-none hover:bg-action"
+          >
             Log in
           </button>
-          <br></br>
-          <button className='forgotPassword' onClick={passwordReset}>
+          <button
+            type="button"
+            className="w-full text-primary text-sm font-medium focus:outline-none hover:underline"
+            onClick={passwordReset}
+          >
             Forgot Password
           </button>
         </form>
 
-        <br />
+        {/* You can include SocialSignIn component here if needed */}
         <SocialSignIn />
       </div>
     </div>

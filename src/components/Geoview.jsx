@@ -140,7 +140,7 @@ const Geoview = ({ data }) => {
                 <Link
                   to={`/house/${house._id}`}
                   key={house.house_id}
-                  className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary h-full w-full cursor-pointer font-didact"
+                  className="bg-accent1 text-accent2 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary h-full w-full cursor-pointer font-didact"
                 >
                   <Carousel
                     showThumbs={false}
@@ -162,7 +162,7 @@ const Geoview = ({ data }) => {
                         />
                       ))}
                   </Carousel>
-                  <div className="p-4 text-accent2">
+                  <div className="p-4 bg-accent1 text-accent2 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">
                       {house.title}
                     </h3>
