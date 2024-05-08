@@ -3,11 +3,17 @@ import api, { GetUniqueStates } from "../api";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { useDispatch, useSelector } from "react-redux";
-import { searchHousesByState, setIsDrag, setQuery } from "../store/houseSlice";
+import {
+  clearFilter,
+  searchHousesByState,
+  setIsDrag,
+  setQuery,
+} from "../store/houseSlice";
 import moment from "moment";
 
 const SearchBar = () => {
   const [uniqueStates, setUniqueStates] = useState([]);
+  const [disabled, setDisabled] = useState(true);
   // const [query, setQuery] = useState({
   //   state: "",
   //   checkIn: "",
@@ -34,6 +40,32 @@ const SearchBar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!query.state && !moment(query.checkIn).isValid()) {
+      setDisabled(true);
+    }
+    if (query.state && !moment(query.checkIn).isValid()) {
+      setDisabled(false);
+    }
+    if (moment(query.checkIn).isValid() && !moment(query.checkOut).isValid()) {
+      setDisabled(true);
+    }
+    if (
+      query.state &&
+      moment(query.checkIn).isValid() &&
+      moment(query.checkOut).isValid()
+    ) {
+      setDisabled(false);
+    }
+  }, [disabled, query]);
+  const getDisabledClear = useCallback(() => {
+    if (!query.state && !moment(query.checkIn).isValid()) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [query]);
+
   // const handleSearch = useCallback(() => {
   //   api.get;
   // }, []);
@@ -43,7 +75,8 @@ const SearchBar = () => {
       {uniqueStates.length > 0 && (
         <>
           <Dropdown
-            className="flex justify-center items-center rounded-xl bg-accent1 text-accent2 hover:bg-secondary min-w-64 w-64 px-6 focus:shadow-none focus-visible:outline-none"
+            showClear
+            className="flex justify-center items-center rounded-xl bg-accent1 text-accent2 hover:bg-secondary min-w-72 w-72 px-6 focus:shadow-none focus-visible:outline-none"
             // panelClassName="bg-accent1 text-accent2"
             value={query.state}
             options={
@@ -67,7 +100,7 @@ const SearchBar = () => {
             }
           />
           <Calendar
-            inputClassName="placeholder:text-accent2 bg-accent1 flex justify-center rounded-xl hover:bg-secondary min-w-40 w-40 px-6 focus:shadow-none focus-visible:outline-none"
+            inputClassName="placeholder:text-accent2 bg-accent1 flex justify-center rounded-xl hover:bg-secondary min-w-32 w-32 px-6 focus:shadow-none focus-visible:outline-none"
             placeholder="Check-In"
             value={query.checkIn}
             onChange={(e) =>
@@ -84,9 +117,18 @@ const SearchBar = () => {
             dateFormat="mm/dd/yy"
           />
           <Calendar
-            inputClassName="placeholder:text-accent2 bg-accent1 flex justify-center rounded-xl hover:bg-secondary min-w-40 w-40 px-6 focus:shadow-none focus-visible:outline-none"
+            inputClassName="placeholder:text-accent2 bg-accent1 flex justify-center rounded-xl hover:bg-secondary min-w-32 w-32 px-6 focus:shadow-none focus-visible:outline-none"
             placeholder="Check-Out"
             value={query.checkOut}
+            minDate={
+              query.checkIn
+                ? new Date(
+                    new Date(query.checkIn).setDate(
+                      new Date(query.checkIn).getDate() + 1
+                    )
+                  )
+                : null
+            }
             onChange={(e) =>
               dispatch(
                 setQuery({
@@ -102,21 +144,30 @@ const SearchBar = () => {
           />
           <button
             className={`flex justify-center items-center rounded-xl ${
-              moment(query.checkIn).isValid() &&
-              !moment(query.checkOut).isValid()
+              disabled
                 ? "bg-primary bg-opacity-80 cursor-not-allowed"
                 : "bg-primary hover:bg-action"
-            } text-accent1 min-w-36 w-36 py-2 px-6`}
-            disabled={
-              moment(query.checkIn).isValid() &&
-              !moment(query.checkOut).isValid()
-            }
+            } text-accent1 min-w-20 w-20 py-2 px-6`}
+            disabled={disabled}
             onClick={() => {
               dispatch(setIsDrag(false));
               dispatch(searchHousesByState());
             }}
           >
             Search
+          </button>
+          <button
+            className={`flex justify-center items-center rounded-xl ${
+              getDisabledClear()
+                ? "bg-warning bg-opacity-80 cursor-not-allowed"
+                : "bg-warning hover:bg-action"
+            } text-accent1 min-w-20 w-20 py-2 px-6`}
+            disabled={getDisabledClear()}
+            onClick={() => {
+              dispatch(clearFilter());
+            }}
+          >
+            Clear
           </button>
         </>
       )}

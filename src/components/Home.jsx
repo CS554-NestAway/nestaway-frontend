@@ -11,7 +11,7 @@ import { checkIfAdminAsync } from "../store/authSlice";
 const Home = () => {
   const [distances, setDistances] = useState({});
   const [view, setView] = useState("map");
-  const { theme } = useContext(ThemeContext);
+  const { toggleSearchVisible } = useContext(ThemeContext);
 
   const houseData = useSelector((state) => state.houses.houseData);
   const mapCenter = useSelector((state) => state.houses.mapCenter);
@@ -33,8 +33,9 @@ const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    toggleSearchVisible(true);
     dispatch(fetchHouses());
-  }, [dispatch]);
+  }, [dispatch, toggleSearchVisible]);
 
   const calculateDistance = useCallback(
     async (nestLat, nestLong) => {

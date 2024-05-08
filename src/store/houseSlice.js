@@ -27,6 +27,16 @@ export const houseSlice = createSlice({
     setIsDrag: (state, action) => {
       state.isDrag = action.payload;
     },
+    clearFilter: (state) => {
+      state.query = {
+        state: "",
+        checkIn: "",
+        checkOut: "",
+        lat: "",
+        lng: "",
+        radius: 10,
+      };
+    },
     setMapCenter: (state, action) => {
       state.mapCenter = action.payload;
     },
@@ -55,7 +65,8 @@ export const houseSlice = createSlice({
   },
 });
 
-export const { setQuery, setMapCenter, setIsDrag } = houseSlice.actions;
+export const { setQuery, setMapCenter, setIsDrag, clearFilter } =
+  houseSlice.actions;
 
 export const fetchHouses = createAsyncThunk(
   "fetchHouses",
