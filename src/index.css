@@ -66,7 +66,8 @@ html[data-theme="dark"] {
 .p-dialog-header,
 .p-stepper-panels,
 .p-autocomplete-item,
-.p-dialog-footer {
+.p-dialog-footer,
+.p-dropdown-item {
   @apply bg-accent1 text-accent2;
 }
 .p-autocomplete-item:hover {
@@ -84,6 +85,9 @@ html[data-theme="dark"] {
 .search-date-input::placeholder {
   @apply text-accent1;
 }
-.p-rating-item-active > svg{
+.p-rating-item-active > svg {
   @apply text-primary;
+}
+.p-dropdown-item.p-focus {
+  @apply bg-secondary;
 }

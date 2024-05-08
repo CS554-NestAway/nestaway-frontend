@@ -3,53 +3,49 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Geoview from "./Geoview";
 import ThemeContext from "../contexts/ThemeContext";
-import api, { HostURL } from "../api";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { searchHouses } from "../store/houseSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHouses, setMapCenter } from "../store/houseSlice";
+import { checkIfAdminAsync } from "../store/authSlice";
 
 const Home = () => {
-  const [position, setPosition] = useState({ latitude: null, longitude: null });
   const [distances, setDistances] = useState({});
-  const [houseData, setHouseData] = useState([]);
   const [view, setView] = useState("map");
   const { theme } = useContext(ThemeContext);
 
+  const houseData = useSelector((state) => state.houses.houseData);
+  const mapCenter = useSelector((state) => state.houses.mapCenter);
+
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkIfAdminAsync());
+  }, [dispatch]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        setPosition({ latitude, longitude });
+        dispatch(setMapCenter([latitude, longitude]));
       });
+    } else {
+      dispatch(setMapCenter([40.75776183421434, -74.04708689910295]));
     }
-  }, []);
-  useEffect(() => {
-    // api
-    //   .get(HostURL)
-    //   .then((response) => {
-    //     setHouseData(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(searchHouses()); // Dispatch the action to fetch houses
+    dispatch(fetchHouses());
   }, [dispatch]);
 
   const calculateDistance = useCallback(
     async (nestLat, nestLong) => {
       const earthRadiusMiles = 3958.8; // Earth's radius in miles
 
-      const dLat = toRadians(nestLat - position.latitude);
-      const dLon = toRadians(nestLong - position.longitude);
+      const dLat = toRadians(nestLat - mapCenter[0]);
+      const dLon = toRadians(nestLong - mapCenter[1]);
 
       const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRadians(position.latitude)) *
+        Math.cos(toRadians(mapCenter[0])) *
           Math.cos(toRadians(nestLat)) *
           Math.sin(dLon / 2) *
           Math.sin(dLon / 2);
@@ -58,7 +54,7 @@ const Home = () => {
       const distance = earthRadiusMiles * c;
       return Math.ceil(distance);
     },
-    [position.latitude, position.longitude]
+    [mapCenter]
   );
 
   function toRadians(degrees) {
@@ -69,7 +65,7 @@ const Home = () => {
     const fetchDistances = async () => {
       const distances = {};
       for (const house of houseData) {
-        if (position.latitude && position.longitude) {
+        if (mapCenter[0] && mapCenter[1]) {
           const distance = await calculateDistance(
             house.address?.location.coordinates[1],
             house.address?.location.coordinates[0]
@@ -80,11 +76,13 @@ const Home = () => {
       setDistances(distances);
     };
 
-    fetchDistances();
-  }, [calculateDistance, houseData, position.latitude, position.longitude]);
+    if (mapCenter && mapCenter[0] && mapCenter[1]) {
+      fetchDistances();
+    }
+  }, [calculateDistance, houseData, mapCenter]);
 
   return (
-    <div className={`font-didact ${theme === "light" ? "" : "bg-black"}`}>
+    <div className={`font-didact bg-secondary text-accent2 h-[91.5vh]`}>
       {view === "list" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
           {houseData &&
@@ -92,7 +90,7 @@ const Home = () => {
               <Link
                 key={house._id}
                 to={`/house/${house._id}`}
-                className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer"
+                className="bg-accent1  shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer"
               >
                 <Carousel
                   showThumbs={false}
@@ -122,12 +120,6 @@ const Home = () => {
                   <p className="text-accent2 mb-2">
                     Location: {house.address.address_line1}
                   </p>
-                  {/* {position.latitude && position.longitude && (
-                <p className="text-accent2 mb-2">
-                  Distance: {calculateDistance(house.latitude, house.longitude)}{" "}
-                  miles
-                </p>
-              )} */}
                   {distances[house._id] && (
                     <p className="text-accent2 mb-2">
                       Distance: {distances[house._id]} miles
@@ -139,12 +131,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="h-full">
-          {houseData && position.latitude && position.longitude && (
-            <Geoview
-              data={houseData}
-              position={[position.latitude, position.longitude]}
-            />
-          )}
+          {houseData && mapCenter && <Geoview data={houseData} />}
         </div>
       )}
 

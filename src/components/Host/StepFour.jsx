@@ -166,8 +166,6 @@ const StepFour = ({
             decrementButtonIcon="pi pi-minus"
           />
         </div>
-        {/* </div>
-      <div className="flex flex-col justify-center items-center gap-4"> */}
         <div className="flex w-full justify-between items-center gap-4">
           <label htmlFor="checkIn">Check In:</label>
           <InputNumber

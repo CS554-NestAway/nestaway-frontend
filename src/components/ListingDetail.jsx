@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api, { HostURL } from "../api";
+import { Navigate, useParams } from "react-router-dom";
+import api, { GetHouseDetails, HostURL } from "../api";
 import ThemeContext from "../contexts/ThemeContext";
 import { Rating } from "primereact/rating";
-import { Divider } from "primereact/divider";
+import { InputNumber } from "primereact/inputnumber";
+import { Calendar } from "primereact/calendar";
 import {
   Barbell,
   Bathtub,
@@ -29,6 +30,8 @@ import {
   WifiHigh,
   Wind,
 } from "@phosphor-icons/react";
+import moment from "moment";
+import { AuthContext } from "../contexts/AuthContext";
 
 const icons = {
   wifi: <WifiHigh className="text-primary text-2xl" />,
@@ -49,19 +52,28 @@ const icons = {
   fireExtinguisher: <FireExtinguisher className="text-primary text-2xl" />,
 };
 
-const ListinDetail = () => {
+const ListingDetail = () => {
   const { id } = useParams();
   const { toggleSearchVisible } = useContext(ThemeContext);
+  const { currentUser } = useContext(AuthContext);
   const [houseDetails, setHouseDetails] = useState(null);
   const [bookingForm, setBookingForm] = useState({
-    startDate: "",
-    endDate: "",
-    guests: 1,
+    houseid: id,
+    checkIn: "",
+    checkOut: "",
   });
+
+  const isFormValid = () => {
+    return (
+      bookingForm.houseid.trim() !== "" &&
+      bookingForm.checkIn !== "" &&
+      bookingForm.checkOut !== ""
+    );
+  };
 
   useEffect(() => {
     api
-      .get(HostURL + id)
+      .get(GetHouseDetails + id)
       .then((response) => {
         setHouseDetails(response.data);
       })
@@ -77,19 +89,15 @@ const ListinDetail = () => {
       toggleSearchVisible(true);
     };
   }, []);
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setBookingForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    // Add your booking submission logic here
+    // console.log(bookingForm);
+    // Add your booking Navigation here
   };
-
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
   if (!houseDetails) {
     return <div>Loading...</div>; // Add a loading state if data is not yet available
   }
@@ -220,10 +228,75 @@ const ListinDetail = () => {
               </span>
             </div>
           </div>
+          <div className="shadow-shadow2 rounded-xl p-6 col-span-2 gap-2 flex justify-center items-center">
+            <div
+              className="flex flex-col gap-2 w-full
+            "
+            >
+              <div
+                key="checkin"
+                className="flex items-center justify-between w-full"
+              >
+                <div className="font-bold">Check In:</div>
+                <Calendar
+                  inputClassName="w-fit h-fit bg-accent1 rounded-lg border-primary border-2 px-4 py-2 text-accent2 focus:shadow-none focus-visible:outline-none"
+                  placeholder="Check-In"
+                  value={bookingForm.checkIn}
+                  onChange={(e) =>
+                    setBookingForm((prevValue) => ({
+                      ...prevValue,
+                      checkIn: e.value,
+                      checkOut: "",
+                    }))
+                  }
+                  dateFormat="mm/dd/yy"
+                />
+              </div>
+              <div
+                key="checkout"
+                className="flex items-center justify-between w-full"
+              >
+                <div className="font-bold">Check In:</div>
+                <Calendar
+                  minDate={
+                    bookingForm.startDate
+                      ? new Date(
+                          new Date(bookingForm.startDate).setDate(
+                            new Date(bookingForm.startDate).getDate() + 1
+                          )
+                        )
+                      : null
+                  }
+                  inputClassName="w-fit h-fit bg-accent1 rounded-lg border-primary border-2 px-4 py-2 text-accent2 focus:shadow-none focus-visible:outline-none"
+                  placeholder="Check-Out"
+                  value={bookingForm.checkOut}
+                  onChange={(e) =>
+                    setBookingForm((prevValue) => ({
+                      ...prevValue,
+                      checkOut: e.value,
+                    }))
+                  }
+                  dateFormat="mm/dd/yy"
+                />
+              </div>
+            </div>
+            <button
+              className={`text-accent1 rounded-lg ml-auto h-fit p-2
+              ${
+                !isFormValid()
+                  ? "bg-primary cursor-not-allowed"
+                  : "bg-primary hover:bg-action"
+              }`}
+              onClick={handleBookingSubmit}
+              disabled={!isFormValid()}
+            >
+              Reserve
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default ListinDetail;
+export default ListingDetail;

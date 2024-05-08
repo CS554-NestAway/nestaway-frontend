@@ -12,8 +12,9 @@ import UserAccount from "./components/UserAccount";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { memo } from "react";
 import useCommon from "./utils/useCommon";
-import ListinDetail from "./components/ListinDetail";
+import ListingDetail from "./components/ListingDetail";
 import PaymentSuccessful from "./components/PaymentSuccessful";
+import Admin from "./components/Admin";
 
 const CommonHook = memo(() => {
   useCommon();
@@ -33,12 +34,16 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/host" element={<Host />} />
-              <Route path="/house/:id" element={<ListinDetail />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/house/:id" element={<ListingDetail />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
               <Route path="/account" element={<UserAccount />} />
               <Route path="/payment" element={<PaymentGateway />} />
-              <Route path="/paymentSuccessful" element={<PaymentSuccessful />} />
+              <Route
+                path="/paymentSuccessful"
+                element={<PaymentSuccessful />}
+              />
             </Routes>
           </Router>
         </NotificationProvider>

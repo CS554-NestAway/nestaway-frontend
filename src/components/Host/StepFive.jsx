@@ -4,42 +4,47 @@ import { Dialog } from "primereact/dialog";
 import ListingPreview from "./ListingPreview";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import PropTypes from "prop-types";
-import api, { HostURL } from "../../api";
+import api, { GetHouseDetails, HostURL } from "../../api";
 
 const StepFive = ({ house, accept, mode }) => {
   const [preview, setPreview] = useState(false);
   const { showToast } = useContext(NotificationContext);
-
-  const handlePublish = useCallback(() => {
-    api
-      .request({
-        method: mode ? "PUT" : "POST",
-        url: `${HostURL}${mode ? `${house._id}` : ""}`,
-        data: {
-          houseType: house.houseType,
-          address: house.address,
-          features: house.features,
-          amenities: house.amenities,
-          settings: {
-            cancellationDays: 7,
-            cancellationPercent: 50,
-            changeDays: 7,
-          },
-          rules: house.rules,
-          photos: house.photos,
-          title: house.title,
-          description: house.description,
-          price: house.price,
-          currency: "USD",
-        },
-      })
-      .then(() => {
-        showToast("success", house.houseType, `Successfully Published!`);
-        accept();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  // console.log(house);
+  const handlePublish = useCallback(async () => {
+    const data = {
+      houseType: house.houseType,
+      address: house.address,
+      features: house.features,
+      amenities: house.amenities,
+      settings: house.settings,
+      rules: house.rules,
+      photos: house.photos,
+      title: house.title,
+      description: house.description,
+      price: house.price,
+      currency: "USD",
+    };
+    if (mode) {
+      await api
+        .put(`${GetHouseDetails}${house._id}`, data)
+        .then(() => {
+          showToast("success", house.houseType, `Successfully Updated!`);
+          accept();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      await api
+        .post(GetHouseDetails, data)
+        .then(() => {
+          showToast("success", house.houseType, `Successfully Published!`);
+          accept();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }, [
     accept,
     house._id,
@@ -51,6 +56,7 @@ const StepFive = ({ house, accept, mode }) => {
     house.photos,
     house.price,
     house.rules,
+    house.settings,
     house.title,
     mode,
     showToast,
@@ -133,6 +139,11 @@ StepFive.propTypes = {
     features: PropTypes.object.isRequired,
     amenities: PropTypes.object.isRequired,
     rules: PropTypes.object.isRequired,
+    settings: PropTypes.shape({
+      cancellationDays: PropTypes.number.isRequired,
+      cancellationPercent: PropTypes.number.isRequired,
+      changeDays: PropTypes.number.isRequired,
+    }).isRequired,
     photos: PropTypes.shape({
       images: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
     }).isRequired,

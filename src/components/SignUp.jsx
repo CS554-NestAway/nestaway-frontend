@@ -1,17 +1,19 @@
-import {useContext, useState} from 'react';
-import {Navigate} from 'react-router-dom';
-import {doCreateUserWithEmailAndPassword} from '../firebase/FirebaseFunctions';
-import {AuthContext} from '../contexts/AuthContext';
-import SocialSignIn from './SocialSignIn';
+import { useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { doCreateUserWithEmailAndPassword } from "../firebase/FirebaseFunctions";
+import { AuthContext } from "../contexts/AuthContext";
+import SocialSignIn from "./SocialSignIn";
+import ThemeContext from "../contexts/ThemeContext";
 
 function SignUp() {
-  const {currentUser} = useContext(AuthContext);
-  const [pwMatch, setPwMatch] = useState('');
+  const { currentUser } = useContext(AuthContext);
+  const { toggleSearchVisible } = useContext(ThemeContext);
+  const [pwMatch, setPwMatch] = useState("");
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const {displayName, email, passwordOne, passwordTwo} = e.target.elements;
+    const { displayName, email, passwordOne, passwordTwo } = e.target.elements;
     if (passwordOne.value !== passwordTwo.value) {
-      setPwMatch('Passwords do not match');
+      setPwMatch("Passwords do not match");
       return false;
     }
 
@@ -26,83 +28,85 @@ function SignUp() {
     }
   };
 
+  useEffect(() => {
+    toggleSearchVisible(false);
+
+    return () => {
+      toggleSearchVisible(true);
+    };
+  }, [toggleSearchVisible]);
+
   if (currentUser) {
-    return <Navigate to='/login' />;
+    return <Navigate to="/login" />;
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="card border border-gray-300 shadow-lg p-8 w-96">
-        <div className='bg-primary'><h1 className="text-2xl mb-4 text-white">Sign up</h1></div>
+    <div className="flex justify-center bg-secondary items-center h-[91.5vh]">
+      <div className="border border-accent2 bg-accent1 text-accent2 shadow-lg rounded-lg p-8 w-96">
+        <div className="bg-primary text-accent1 py-4 px-8 mb-4 rounded-t-lg">
+          <h1 className="text-2xl">Sign up</h1>
+        </div>
         {pwMatch && <h4 className="error">{pwMatch}</h4>}
-        <form onSubmit={handleSignUp}>
+        <form className="space-y-4" onSubmit={handleSignUp}>
           <div className="form-group">
-            <label>
+            <label htmlFor="displayName" className="block">
               Name:
-              <br />
-              <input
-                className="form-control mt-2 w-full"
-                required
-                name="displayName"
-                type="text"
-                placeholder="Name"
-                autoFocus={true}
-              />
             </label>
+            <input
+              className="w-full px-4 py-2 border bg-accent1 text-accent2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+              required
+              name="displayName"
+              type="text"
+              placeholder="Name"
+              autoFocus
+            />
           </div>
           <div className="form-group">
-            <label>
+            <label htmlFor="email" className="block">
               Email:
-              <br />
-              <input
-                className="form-control mt-2"
-                required
-                name="email"
-                type="email"
-                placeholder="Email"
-              />
             </label>
+            <input
+              className="w-full px-4 py-2 border bg-accent1 text-accent2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+              required
+              name="email"
+              type="email"
+              placeholder="Email"
+            />
           </div>
           <div className="form-group">
-            <label>
+            <label htmlFor="passwordOne" className="block">
               Password:
-              <br />
-              <input
-                className="form-control mt-2"
-                id="passwordOne"
-                name="passwordOne"
-                type="password"
-                placeholder="Password"
-                autoComplete="off"
-                required
-              />
             </label>
+            <input
+              className="w-full px-4 py-2 border bg-accent1 text-accent2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+              id="passwordOne"
+              name="passwordOne"
+              type="password"
+              placeholder="Password"
+              autoComplete="off"
+              required
+            />
           </div>
           <div className="form-group">
-            <label>
+            <label htmlFor="passwordTwo" className="block">
               Confirm Password:
-              <br />
-              <input
-                className="form-control mt-2"
-                name="passwordTwo"
-                type="password"
-                placeholder="Confirm Password"
-                autoComplete="off"
-                required
-              />
             </label>
+            <input
+              className="w-full px-4 py-2 border bg-accent1 text-accent2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+              name="passwordTwo"
+              type="password"
+              placeholder="Confirm Password"
+              autoComplete="off"
+              required
+            />
           </div>
-          <br></br>
           <button
-            className={"bg-primary  gap-2 text-accent1 rounded-lg ml-auto px-2"}
-            id="submitButton"
-            name="submitButton"
             type="submit"
+            className="w-full bg-primary text-white py-2 rounded-lg focus:outline-none hover:bg-action"
           >
             Sign Up
           </button>
         </form>
-        <br />
         <SocialSignIn />
       </div>
     </div>
