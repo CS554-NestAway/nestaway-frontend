@@ -2,14 +2,21 @@ import { useCallback, useEffect, useState } from "react";
 import api, { GetUniqueStates } from "../api";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
+import { useDispatch, useSelector } from "react-redux";
+import { searchHousesByState, setQuery } from "../store/houseSlice";
+import moment from "moment";
 
 const SearchBar = () => {
   const [uniqueStates, setUniqueStates] = useState([]);
-  const [query, setQuery] = useState({
-    state: "",
-    checkIn: "",
-    checkOut: "",
-  });
+  // const [query, setQuery] = useState({
+  //   state: "",
+  //   checkIn: "",
+  //   checkOut: "",
+  // });
+
+  const dispatch = useDispatch();
+
+  const query = useSelector((state) => state.houses.query);
   useEffect(() => {
     api
       .get(GetUniqueStates)
@@ -27,9 +34,9 @@ const SearchBar = () => {
     };
   }, []);
 
-  const handleSearch = useCallback(() => {
-    api.get;
-  }, []);
+  // const handleSearch = useCallback(() => {
+  //   api.get;
+  // }, []);
 
   return (
     <div className="flex bg-accent1 shadow-shadow2 rounded-xl whitespace-nowrap cursor-pointer border border-primary">
@@ -48,7 +55,15 @@ const SearchBar = () => {
             }
             placeholder="Select Destination"
             onChange={(e) =>
-              setQuery((prevValue) => ({ ...prevValue, state: e.value }))
+              dispatch(
+                setQuery({
+                  ...query,
+                  state: e.value,
+                  lat: "",
+                  lng: "",
+                  radius: 10,
+                })
+              )
             }
           />
           <Calendar
@@ -56,7 +71,15 @@ const SearchBar = () => {
             placeholder="Check-In"
             value={query.checkIn}
             onChange={(e) =>
-              setQuery((prevValue) => ({ ...prevValue, checkIn: e.value }))
+              dispatch(
+                setQuery({
+                  ...query,
+                  checkIn: e.value,
+                  lat: "",
+                  lng: "",
+                  radius: 10,
+                })
+              )
             }
             dateFormat="mm/dd/yy"
           />
@@ -65,16 +88,35 @@ const SearchBar = () => {
             placeholder="Check-Out"
             value={query.checkOut}
             onChange={(e) =>
-              setQuery((prevValue) => ({ ...prevValue, checkOut: e.value }))
+              dispatch(
+                setQuery({
+                  ...query,
+                  checkOut: e.value,
+                  lat: "",
+                  lng: "",
+                  radius: 10,
+                })
+              )
             }
             dateFormat="mm/dd/yy"
           />
-          <div
-            className="flex justify-center items-center rounded-xl bg-primary text-accent1 hover:bg-action min-w-36 w-36 py-2 px-6"
-            onClick={() => handleSearch()}
+          <button
+            className={`flex justify-center items-center rounded-xl ${
+              moment(query.checkIn).isValid() &&
+              !moment(query.checkOut).isValid()
+                ? "bg-primary bg-opacity-80 cursor-not-allowed"
+                : "bg-primary hover:bg-action"
+            } text-accent1 min-w-36 w-36 py-2 px-6`}
+            disabled={
+              moment(query.checkIn).isValid() &&
+              !moment(query.checkOut).isValid()
+            }
+            onClick={() => {
+              dispatch(searchHousesByState());
+            }}
           >
             Search
-          </div>
+          </button>
         </>
       )}
     </div>

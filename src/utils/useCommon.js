@@ -12,17 +12,18 @@ const useCommon = () => {
 
   useEffect(() => {
     const isAbsoluteURLRegex = /^(?:\w+:)\/\//;
+    const authToken = currentUser?.accessToken;
+
     api.interceptors.request.use(
       (config) => {
         if (!isAbsoluteURLRegex.test(config.url)) {
           config.url = BaseURL + config.url;
         }
-        console.log(currentUser?.accessToken);
-        const AuthToken = currentUser?.accessToken;
-        if (AuthToken === null || AuthToken === undefined || AuthToken === "") {
+
+        if (!authToken) {
           config.headers.Authorization = "";
         } else {
-          config.headers.Authorization = `Bearer ${AuthToken}`;
+          config.headers.Authorization = `Bearer ${authToken}`;
         }
         return config;
       },

@@ -111,7 +111,6 @@ const ListingWizard = ({ active, mode, onClose, houseDetails }) => {
       reject,
     });
   }, [accept]);
-
   const steps = [
     {
       header: "Address",
@@ -188,7 +187,12 @@ const ListingWizard = ({ active, mode, onClose, houseDetails }) => {
               housenumber: houseAddress.housenumber,
               location: {
                 type: "Point",
-                coordinates: [houseAddress.lon, houseAddress.lat],
+                coordinates: houseAddress?.location?.coordinates
+                  ? [
+                      houseAddress?.location.coordinates[0],
+                      houseAddress?.location.coordinates[1],
+                    ]
+                  : [houseAddress?.lon, houseAddress?.lat],
               },
               state_code: houseAddress.state_code,
               result_type: houseAddress.result_type,

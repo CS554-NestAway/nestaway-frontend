@@ -101,7 +101,7 @@ export const validHouseTypes = [
   "Cabin",
   "Loft",
   "Studio",
-  "Other",
+  "Others",
 ];
 
 export const houseTypes = [
