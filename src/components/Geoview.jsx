@@ -28,6 +28,7 @@ const Geoview = ({ data }) => {
   const query = useSelector((state) => state.houses.query);
   const [mapZoom, setMapZoom] = useState(10);
   const mapCenter = useSelector((state) => state.houses.mapCenter);
+  const [isDrag, setIsDrag] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -46,9 +47,8 @@ const Geoview = ({ data }) => {
   };
 
   const handleDragEnd = (event) => {
+    setIsDrag(true);
     const center = event.target.getCenter();
-    // console.log(center);
-    dispatch(setMapCenter([center.lat, center.lng]));
     dispatch(
       setQuery({
         state: "",
@@ -86,7 +86,7 @@ const Geoview = ({ data }) => {
         map.current.setZoom(10);
       }
     }
-  }, [data]);
+  }, [data, isDrag]);
 
   // useEffect(() => {
   //   if (Array.isArray(mapCenter)) {

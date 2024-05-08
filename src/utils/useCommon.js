@@ -23,7 +23,9 @@ const useCommon = () => {
         if (!authToken) {
           config.headers.Authorization = "";
         } else {
+          console.log(authToken);
           config.headers.Authorization = `Bearer ${authToken}`;
+          console.log(config.headers);
         }
         return config;
       },
