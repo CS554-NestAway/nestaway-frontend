@@ -5,17 +5,18 @@ import { AuthContext } from "../contexts/AuthContext";
 import SocialSignIn from "./SocialSignIn";
 import ThemeContext from "../contexts/ThemeContext";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 async function sendSignUpEmail(email, displayName) {
-  const response = await fetch('http://localhost:8080/sendemail/accemail', {
-    method: 'POST',
+  const response = await fetch(BaseURL + "/sendemail/accemail", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, displayName }),
   });
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to send email');
+    throw new Error(errorData.message || "Failed to send email");
   }
 }
 

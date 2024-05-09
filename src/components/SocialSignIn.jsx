@@ -3,12 +3,13 @@ import { doSocialSignIn } from "../firebase/FirebaseFunctions";
 import { checkIfAdminAsync } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 const SocialSignIn = () => {
   const dispatch = useDispatch();
   const socialSignOn = async () => {
     try {
-      const userData = await doSocialSignIn(); 
-      await sendSignUpEmail(userData.email, userData.displayName); 
+      const userData = await doSocialSignIn();
+      await sendSignUpEmail(userData.email, userData.displayName);
       dispatch(checkIfAdminAsync());
     } catch (error) {
       alert(error);
@@ -16,16 +17,16 @@ const SocialSignIn = () => {
   };
   const sendSignUpEmail = async (email, displayName) => {
     try {
-      const response = await fetch('http://localhost:8080/sendemail/accemail', {
-        method: 'POST',
+      const response = await fetch(BaseURL + "/sendemail/accemail", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, displayName }),
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to send email');
+        throw new Error(errorData.message || "Failed to send email");
       }
     } catch (error) {
       alert(error.message);
