@@ -1,4 +1,4 @@
-#**NestAway-A Property Management Platform**
+#NestAway-A Property Management Platform
 
 **Description:**
 NestAway is an innovative online platform that redefines the villa and property booking experience, offering a seamless interface similar to Airbnb. Our vision is to create a vibrant community where travelers effortlessly discover, book, and share unique accommodations globally. With a curated selection of visually appealing properties, users can explore listings through list and map views, ensuring they find the perfect destination.Using Nestaway, users can not only book villas and houses but also host them. Booking is simple and secure, with email confirmations providing peace of mind. NestAway aims to streamline the booking process, making travel convenient and enjoyable for users worldwide.
