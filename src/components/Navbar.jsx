@@ -33,33 +33,32 @@ const Navbar = () => {
     return (
       <>
         <div className="flex gap-2">
+          <Link
+            className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+              pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+            } `}
+            to="/bookings"
+          >
+            Bookings
+          </Link>
+          <Link
+            className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+              pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+            } `}
+            to="/trips"
+          >
+            Trips
+          </Link>
+
           {!isAdmin && (
-            <>
-              <Link
-                className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
-                  pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
-                } `}
-                to="/bookings"
-              >
-                Bookings
-              </Link>
-              <Link
-                className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
-                  pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
-                } `}
-                to="/trips"
-              >
-                Trips
-              </Link>
-              <Link
-                className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
-                  pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
-                } `}
-                to="/host"
-              >
-                Nest your Home
-              </Link>
-            </>
+            <Link
+              className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${
+                pathname?.includes("host") ? "z-10 bg-action" : "bg-primary"
+              } `}
+              to="/host"
+            >
+              Nest your Home
+            </Link>
           )}
           {isAdmin && (
             <Link

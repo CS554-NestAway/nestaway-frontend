@@ -91,7 +91,7 @@ const ListingDetail = () => {
     return () => {
       toggleSearchVisible(true);
     };
-  }, []);
+  }, [toggleSearchVisible]);
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
