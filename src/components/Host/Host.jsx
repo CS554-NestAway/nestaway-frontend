@@ -14,6 +14,7 @@ import {
 import { GetHouseDetails, GetHousesByHost, HostURL } from "../../api";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import { getAuth } from "firebase/auth";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
 const Host = () => {
@@ -24,8 +25,21 @@ const Host = () => {
   const [listingData, setListingData] = useState(null);
   const [houseDetails, setHouseDetails] = useState(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
-  console.log(listingData);
   const { toggleSearchVisible } = useContext(ThemeContext);
+
+  const auth = getAuth();
+  const fetchUser = async () => {
+    try {
+      const userSnapshot = await auth.getUser("9hnpWptMm9bxqJ5KYaw8aF2fkOF2");
+      console.log(userSnapshot);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      //  setUser(null); // Optionally handle the error here
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const listingButtons = [
     { name: "allListings", label: "All Listings" },
@@ -154,60 +168,133 @@ const Host = () => {
         </div>
         <div className="border-b border-accent2 w-full"></div>
         <div className="bg-secondary grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-6">
-          {houseData.map((house) => (
-            <div
-              key={house._id}
-              className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer w-60"
-              onClick={() => handleUpdateListing(house._id)}
-            >
-              <Carousel
-                showThumbs={false}
-                showIndicators={true}
-                showStatus={false}
-                infiniteLoop={true}
-                autoPlay={true}
-                interval={5000}
-                className="max-w-screen-lg"
+          {activeButton === "allListings" &&
+            houseData.map((house) => (
+              <div
+                key={house._id}
+                className="bg-accent1 shadow-shadow2 rounded-lg overflow-hidden hover:bg-secondary cursor-pointer w-60"
+                onClick={() => handleUpdateListing(house._id)}
               >
-                {house.photos &&
-                  house.photos.images &&
-                  house.photos.images.map((photo, index) => (
-                    <img
-                      key={house._id + index}
-                      src={photo}
-                      alt={house.title}
-                      className="w-full h-40 object-cover object-center"
-                    />
-                  ))}
-              </Carousel>
-              <div className="p-4 text-accent2">
-                <h3 className="text-lg font-semibold mb-2">{house.title}</h3>
-                <p className="text-accent2 mb-2">
-                  Price per night: ${house.price}
-                </p>
-                <p className="text-accent2 mb-2">
-                  Location: {house.address.address_line1}
-                </p>
+                <Carousel
+                  showThumbs={false}
+                  showIndicators={true}
+                  showStatus={false}
+                  infiniteLoop={true}
+                  autoPlay={true}
+                  interval={5000}
+                  className="max-w-screen-lg"
+                >
+                  {house.photos &&
+                    house.photos.images &&
+                    house.photos.images.map((photo, index) => (
+                      <img
+                        key={house._id + index}
+                        src={photo}
+                        alt={house.title}
+                        className="w-full h-40 object-cover object-center"
+                      />
+                    ))}
+                </Carousel>
+                <div className="p-4 text-accent2">
+                  <h3 className="text-lg font-semibold mb-2">{house.title}</h3>
+                  <p className="text-accent2 mb-2">
+                    Price per night: ${house.price}
+                  </p>
+                  <p className="text-accent2 mb-2">
+                    Location: {house.address.address_line1}
+                  </p>
 
-                {house.isApproved && (
-                  <div className="bg-info w-fit px-4 py-2 text-accent1 rounded-lg">
-                    Approved
-                  </div>
-                )}
+                  {house.isApproved && (
+                    <div className="bg-info w-fit px-4 py-2 text-accent1 rounded-lg">
+                      Approved
+                    </div>
+                  )}
 
-                {!house.isApproved && house.isDeleted && (
-                  <div className="bg-error w-fit px-4 py-2 text-accent1 rounded-lg">
-                    Rejected
-                  </div>
-                )}
-                {!house.isApproved && !house.isDeleted && (
-                  <div className="bg-warning w-fit px-4 py-2 text-accent1 rounded-lg">
-                    Pending
-                  </div>
-                )}
+                  {!house.isApproved && house.isDeleted && (
+                    <div className="bg-error w-fit px-4 py-2 text-accent1 rounded-lg">
+                      Rejected
+                    </div>
+                  )}
+                  {!house.isApproved && !house.isDeleted && (
+                    <div className="bg-warning w-fit px-4 py-2 text-accent1 rounded-lg">
+                      Pending
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          {activeButton === "currentlyHosting" &&
+            listingData.current.map((house) => {
+              return house.bookings.map((booking) => (
+                <div
+                  key={booking.bookingId}
+                  className="bg-accent1 text-accent2 rounded-lg shadow-md overflow-hidden hover:shadow-xl transform transition-transform duration-300 hover:-translate-y-2 cursor-pointer"
+                >
+                  <div className="bg-primary  text-center py-2">
+                    <div className="text-accent1">
+                      Total Price: ${booking.totalPrice.toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="mb-2">
+                      Check-in: {new Date(booking.checkIn).toLocaleDateString()}
+                    </div>
+                    <div className=" mb-2">
+                      Check-out:{" "}
+                      {new Date(booking.checkOut).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ));
+            })}
+          {activeButton === "upcoming" &&
+            listingData.upcomingApproved.map((house) => {
+              return house.bookings.map((booking) => (
+                <div
+                  key={booking.bookingId}
+                  className="bg-accent1 text-accent2 rounded-lg shadow-md overflow-hidden hover:shadow-xl transform transition-transform duration-300 hover:-translate-y-2 cursor-pointer"
+                >
+                  <div className="bg-primary  text-center py-2">
+                    <div className="text-accent1">
+                      Total Price: ${booking.totalPrice.toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="mb-2">
+                      Check-in: {new Date(booking.checkIn).toLocaleDateString()}
+                    </div>
+                    <div className=" mb-2">
+                      Check-out:{" "}
+                      {new Date(booking.checkOut).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ));
+            })}
+          {activeButton === "pendingReview" &&
+            listingData.pending.map((house) => {
+              return house.bookings.map((booking) => (
+                <div
+                  key={booking.bookingId}
+                  className="bg-accent1 text-accent2 rounded-lg shadow-md overflow-hidden hover:shadow-xl transform transition-transform duration-300 hover:-translate-y-2 cursor-pointer"
+                >
+                  <div className="bg-primary  text-center py-2">
+                    <div className="text-accent1">
+                      Total Price: ${booking.totalPrice.toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="mb-2">
+                      Check-in: {new Date(booking.checkIn).toLocaleDateString()}
+                    </div>
+                    <div className=" mb-2">
+                      Check-out:{" "}
+                      {new Date(booking.checkOut).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ));
+            })}
         </div>
       </div>
       <ListingWizard

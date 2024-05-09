@@ -95,7 +95,7 @@ const ListingDetail = () => {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    console.log(bookingForm);
+    // console.log(bookingForm);
     // Add your booking Navigation here
     return navigateTo("/payment", { state: { bookingForm } });
   };
@@ -151,10 +151,10 @@ const ListingDetail = () => {
               {features.bathrooms} Bath{features.bathrooms > 1 ? "s" : ""}
             </span>
           </div>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <span className="mr-2">Rating:</span>
             <Rating value={averageRating} readOnly cancel={false} />
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -11,20 +11,25 @@ const BaseURL = import.meta.env.VITE_BASE_URL;
 function PaymentGateway() {
   const navigateTo = useNavigate();
   const location = useLocation();
+  if (!location.state?.bookingForm) {
+    window.location.href = "/";
+  }
   const data = location.state?.bookingForm;
-  const checkIn = data.checkIn.toString();
-  const checkOut = data.checkOut.toString();
-  const houseId = data.houseid;
+  let checkIn = "",
+    checkOut = "",
+    houseId = "";
+  if (data) {
+    checkIn = data.checkIn.toString();
+    checkOut = data.checkOut.toString();
+    houseId = data.houseid;
+  }
   const [houseInfo, setHouseInfo] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
   const [totalPrice, setTotalPrice] = useState(0);
-  //const [taxes, setTaxes] = useState(0);
   const [serviceFee, setServiceFee] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
   const [nights, setNights] = useState(0);
-  //   const [paid, setPaid] = useState(false);
-  //   const [paymentInfo, setPaymentInfo] = useState();
   const [creditsBalance, setCreditsBalance] = useState(0);
   const [enoughBalance, setEnoughBalance] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +89,7 @@ function PaymentGateway() {
     };
 
     fetchData();
-  }, [houseId, checkIn, checkOut]);
+  }, [houseId, checkIn, checkOut, currentUser]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -143,17 +148,17 @@ function PaymentGateway() {
   };
 
   return (
-    <div className="relative mx-auto w-full bg-white">
+    <div className="relative mx-auto w-full bg-accent1">
       <div className="grid min-h-screen grid-cols-10">
         {/* Left Section */}
         <div className="col-span-full py-6 px-4 sm:py-12 lg:col-span-6 lg:py-24">
           <div className="mx-auto w-full max-w-lg">
-            <h1 className="relative text-2xl font-medium text-gray-700 sm:text-3xl">
+            <h1 className="relative text-2xl font-medium text-accent2 sm:text-3xl">
               Secure Checkout
               <span className="mt-2 block h-1 w-10 bg-teal-600 sm:w-20"></span>
             </h1>
             <div className="text-center mt-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              <h2 className="text-3xl font-bold text-accent2 mb-4">
                 Pay with NestAway credits
               </h2>
               <div
@@ -165,11 +170,11 @@ function PaymentGateway() {
               </div>
             </div>
             {/* Terms and Conditions */}
-            <div className="mt-10 text-center text-sm font-semibold text-gray-500">
+            <div className="mt-10 text-center text-sm font-semibold text-accent2">
               By placing this order you agree to the{" "}
               <a
                 onClick={openModule}
-                className="whitespace-nowrap text-teal-400 underline hover:text-teal-600 cursor-pointer"
+                className="whitespace-nowrap text-primary underline hover:text-action cursor-pointer"
               >
                 Terms and Conditions
               </a>
@@ -185,10 +190,10 @@ function PaymentGateway() {
             {/* Place Order Button */}
             <button
               onClick={onClickComfirm}
-              className={`mt-4 inline-flex w-full items-center justify-center rounded py-2.5 px-4 text-base font-semibold tracking-wide text-white text-opacity-80 outline-none ring-offset-2 transition hover:text-opacity-100 focus:ring-2 ${
+              className={`mt-4 inline-flex w-full items-center justify-center rounded py-2.5 px-4 text-base font-semibold tracking-wide text-accent1 text-opacity-80 outline-none ring-offset-2 transition hover:text-opacity-100 focus:ring-2 ${
                 !enoughBalance
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-teal-600 hover:bg-teal-700 focus:bg-teal-500 focus:ring-teal-500"
+                  : "bg-primary hover:bg-action"
               }`}
               disabled={!enoughBalance}
             >
@@ -196,7 +201,7 @@ function PaymentGateway() {
             </button>
             {error && (
               <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                className="bg-red-100 border border-red-400 text-error px-4 py-3 rounded relative"
                 role="alert"
               >
                 <strong className="font-bold">Error:</strong>
@@ -218,7 +223,7 @@ function PaymentGateway() {
               className="absolute inset-0 h-full w-full object-cover"
             />
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 h-full w-full bg-gradient-to-t from-teal-800 to-teal-400 opacity-95"></div>
+            <div className="absolute inset-0 h-full w-full bg-primary opacity-95"></div>
           </div>
           {/* Order Details */}
           <div className="relative">
@@ -231,38 +236,38 @@ function PaymentGateway() {
                     className="max-h-16"
                   />
                   <div className="ml-3">
-                    <p className="text-base font-semibold text-white">
+                    <p className="text-base font-semibold text-accent1">
                       {houseInfo.title}
                     </p>
-                    <p className="text-sm font-medium text-white text-opacity-80">
+                    <p className="text-sm font-medium text-accent1 text-opacity-80">
                       {houseInfo.description}
                     </p>
                   </div>
                 </div>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-accent1">
                   ${houseInfo.price}
                 </p>
               </li>
             </ul>
             {/* Separator Line */}
-            <div className="my-5 h-0.5 w-full bg-white bg-opacity-30"></div>
+            <div className="my-5 h-0.5 w-full bg-accent1 bg-opacity-30"></div>
             {/* Total and VAT */}
             <div className="space-y-2">
-              <p className="flex justify-between text-lg font-bold text-white">
+              <p className="flex justify-between text-lg font-bold text-accent1">
                 <span>Total price(including taxes):</span>
                 <span>${totalPrice}</span>
               </p>
-              <p className="flex justify-between text-sm font-medium text-white">
+              <p className="flex justify-between text-sm font-medium text-accent1">
                 <span>
                   ${houseInfo.price} x {nights} nights:
                 </span>
                 <span>${subtotal}</span>
               </p>
-              <p className="flex justify-between text-sm font-medium text-white">
+              <p className="flex justify-between text-sm font-medium text-accent1">
                 <span>Cleaning fee:</span>
                 <span>$100.00</span>
               </p>
-              <p className="flex justify-between text-sm font-medium text-white">
+              <p className="flex justify-between text-sm font-medium text-accent1">
                 <span>Nestaway service fee:</span>
                 <span>${serviceFee}</span>
               </p>
@@ -274,8 +279,8 @@ function PaymentGateway() {
           </div>
 
           {/* Money Back Guarantee */}
-          <div className="relative mt-10 flex bg-gray-800 rounded-lg p-4">
-            <div className="flex flex-col text-white">
+          <div className="relative mt-10 flex bg-warning rounded-lg p-4">
+            <div className="flex flex-col text-accent1">
               <span className="text-sm font-bold">
                 Cancellation & Change Policy
               </span>
