@@ -7,12 +7,31 @@ const SocialSignIn = () => {
   const dispatch = useDispatch();
   const socialSignOn = async () => {
     try {
-      await doSocialSignIn();
+      const userData = await doSocialSignIn(); 
+      await sendSignUpEmail(userData.email, userData.displayName); 
       dispatch(checkIfAdminAsync());
     } catch (error) {
       alert(error);
     }
   };
+  const sendSignUpEmail = async (email, displayName) => {
+    try {
+      const response = await fetch('http://localhost:8080/sendemail/accemail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, displayName }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send email');
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center font-didact text-primary bg-accent1 mt-2">
       <button
