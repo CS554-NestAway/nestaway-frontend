@@ -4,10 +4,11 @@ import { doCreateUserWithEmailAndPassword } from "../firebase/FirebaseFunctions"
 import { AuthContext } from "../contexts/AuthContext";
 import SocialSignIn from "./SocialSignIn";
 import ThemeContext from "../contexts/ThemeContext";
+import { SendEmailURL } from "../api";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
 async function sendSignUpEmail(email, displayName) {
-  const response = await fetch(BaseURL + "/sendemail/accemail", {
+  const response = await fetch(BaseURL + SendEmailURL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

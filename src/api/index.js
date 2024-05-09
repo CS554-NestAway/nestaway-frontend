@@ -14,6 +14,7 @@ export const RejectHouse = "/host/reject/";
 export const CheckAdmin = "/host/checkadmin";
 export const GetSearchByLatLng = "/search/searchByLatLng/";
 export const TripURL = "/trip/";
+export const SendEmailURL = "/sendemail/accemail"
 
 export default axios.create({
   timeout: 60000,
