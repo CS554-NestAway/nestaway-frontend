@@ -155,23 +155,6 @@ export default function Bookings() {
           </div>
           <div className="bg-gray-100 p-4 flex justify-end">
             <button
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 mr-2 rounded"
-              onClick={() =>
-                handleStatusToggle(
-                  "change",
-                  booking.houseId,
-                  booking.booking.bookingId,
-                  booking.booking.totalPrice.toFixed(2),
-                  booking.booking.uid,
-                  booking.booking.checkIn,
-                  booking.settings,
-                  booking.hostId
-                )
-              }
-            >
-              Change
-            </button>
-            <button
               className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded"
               onClick={() =>
                 handleStatusToggle(

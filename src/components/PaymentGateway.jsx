@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import PaymentButton from "./PaymentButton";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import { Dialog } from "primereact/dialog";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GetHouseDetails, BookingURL, CreditsURL } from "../api";
 import { AuthContext } from "../contexts/AuthContext";
@@ -33,6 +33,7 @@ function PaymentGateway() {
   const [creditsBalance, setCreditsBalance] = useState(0);
   const [enoughBalance, setEnoughBalance] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [paySuccess, setPaySuccess] = useState(false);
   const { currentUser } = useContext(AuthContext);
   useEffect(() => {
     const fetchData = async () => {
@@ -113,6 +114,11 @@ function PaymentGateway() {
     setIsModalOpen(false);
   };
 
+  const handleClose = () => {
+    setPaySuccess(false);
+    window.location.href = "/";
+  };
+
   const onClickComfirm = async (e) => {
     e.preventDefault();
     const bookingInfo = {
@@ -139,7 +145,7 @@ function PaymentGateway() {
           { creditsToDeduct: totalPrice },
           { headers }
         );
-        navigateTo("/paymentSuccessful");
+        setPaySuccess(true);
       }
     } catch (e) {
       console.log(e.response.data.error);
@@ -301,6 +307,44 @@ function PaymentGateway() {
           </div>
         </div>
       </div>
+      <Dialog
+        header={"Payment Successful"}
+        visible={paySuccess}
+        style={{ width: "50vw", height: "50vh" }}
+        onHide={() => handleClose()}
+        className="font-didact bg-accent1 overflow"
+      >
+        <div className="bg-accent1 h-screen text-accent2">
+          <div className=" p-6 md:mx-auto">
+            <svg
+              viewBox="0 0 24 24"
+              className="text-primary w-16 h-16 mx-auto my-6"
+            >
+              <path
+                fill="currentColor"
+                d="M12,0A12,12,0,1,0,24,12,12.014,12.014,0,0,0,12,0Zm6.927,8.2-6.845,9.289a1.011,1.011,0,0,1-1.43.188L5.764,13.769a1,1,0,1,1,1.25-1.562l4.076,3.261,6.227-8.451A1,1,0,1,1,18.927,8.2Z"
+              ></path>
+            </svg>
+            <div className="text-center">
+              <h3 className="md:text-2xl text-base text-accent2 font-semibold text-center">
+                Payment Done!
+              </h3>
+              <p className="text-accent2 my-2">
+                Thank you for completing your credit online payment.
+              </p>
+              <p>Have a great day!</p>
+              <div className="py-10 text-center">
+                <a
+                  href="/"
+                  className={`text-primary rounded-lg ml-auto p-2 border-2 border-primary  hover:bg-primary hover:text-accent1`}
+                >
+                  GO HOME
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

@@ -30,8 +30,6 @@ import {
   WifiHigh,
   Wind,
 } from "@phosphor-icons/react";
-import moment from "moment";
-import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
@@ -95,28 +93,14 @@ const ListingDetail = () => {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    // console.log(bookingForm);
-    // Add your booking Navigation here
     return navigateTo("/payment", { state: { bookingForm } });
   };
   if (!houseDetails) {
-    return <div>Loading...</div>; // Add a loading state if data is not yet available
+    return <div>Loading...</div>;
   }
 
-  const {
-    houseType,
-    address,
-    features,
-    amenities,
-    rules,
-    settings,
-    photos,
-    title,
-    description,
-    price,
-    currency,
-    averageRating,
-  } = houseDetails;
+  const { houseType, address, features, amenities, rules, settings } =
+    houseDetails;
 
   return (
     <div className="flex flex-col text-accent2 bg-accent1 overflow-y-auto py-6 px-24 font-didact">

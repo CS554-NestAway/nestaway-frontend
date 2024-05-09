@@ -39,7 +39,7 @@ const Navbar = () => {
             } `}
             to="/bookings"
           >
-            Bookings
+            Pending Bookings
           </Link>
           <Link
             className={`flex justify-center py-2 px-4 rounded-lg items-center text-accent1 font-didact transition-colors hover:bg-action ${

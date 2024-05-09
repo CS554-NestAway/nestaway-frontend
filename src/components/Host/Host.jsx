@@ -45,7 +45,6 @@ const Host = () => {
     { name: "allListings", label: "All Listings" },
     { name: "currentlyHosting", label: "Currently Hosting" },
     { name: "upcoming", label: "Upcoming" },
-    { name: "pendingReview", label: "Pending Review" },
   ];
 
   const [activeButton, setActiveButton] = useState(listingButtons[0].name);
