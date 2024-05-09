@@ -7,12 +7,13 @@ import PropTypes from "prop-types";
 import api, { GetHouseDetails, HostURL } from "../../api";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
 const StepFive = ({ house, accept, mode }) => {
   const [preview, setPreview] = useState(false);
   const { showToast } = useContext(NotificationContext);
-  const currentUser = useSelector((state) => state.auth.currentUser);
+  const { currentUser } = useContext(AuthContext);
   const handlePublish = useCallback(async () => {
     const data = {
       houseType: house.houseType,

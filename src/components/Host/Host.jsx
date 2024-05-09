@@ -14,32 +14,16 @@ import {
 import { GetHouseDetails, GetHousesByHost, HostURL } from "../../api";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-import { getAuth } from "firebase/auth";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
 const Host = () => {
   const { currentUser } = useContext(AuthContext);
   const [wizardVisible, setWizardVisible] = useState(false);
-  const [currentData, setCurrentData] = useState([]);
   const [houseData, setHouseData] = useState([]);
   const [listingData, setListingData] = useState(null);
   const [houseDetails, setHouseDetails] = useState(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const { toggleSearchVisible } = useContext(ThemeContext);
-
-  const auth = getAuth();
-  const fetchUser = async () => {
-    try {
-      const userSnapshot = await auth.getUser("9hnpWptMm9bxqJ5KYaw8aF2fkOF2");
-      console.log(userSnapshot);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      //  setUser(null); // Optionally handle the error here
-    }
-  };
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   const listingButtons = [
     { name: "allListings", label: "All Listings" },

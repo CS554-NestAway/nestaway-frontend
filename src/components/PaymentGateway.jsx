@@ -93,7 +93,19 @@ function PaymentGateway() {
   }, [houseId, checkIn, checkOut, currentUser]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <>
+        <div className="flex justify-center items-center h-screen">
+          <div className="w-12 h-12 border-t-4 border-r-4 border-b-4 border-l-4 border-gray-900 animate-spin"></div>
+        </div>
+        <button
+          className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
+          onClick={() => history.back()}
+        >
+          Go Back
+        </button>
+      </>
+    );
   }
 
   if (!currentUser) {
@@ -314,7 +326,7 @@ function PaymentGateway() {
         onHide={() => handleClose()}
         className="font-didact bg-accent1 overflow"
       >
-        <div className="bg-accent1 h-screen text-accent2">
+        <div className="bg-accent1 h-full text-accent2">
           <div className=" p-6 md:mx-auto">
             <svg
               viewBox="0 0 24 24"
