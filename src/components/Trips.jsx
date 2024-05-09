@@ -33,7 +33,11 @@ export default function Bookings() {
   }, [currentUser]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-12 h-12 border-t-4 border-r-4 border-b-4 border-l-4 border-gray-900 animate-spin"></div>
+      </div>
+    );
   }
 
   if (error) {
@@ -154,23 +158,6 @@ export default function Bookings() {
             {/* <p className="text-gray-600"><strong>Status:</strong> {booking.status}</p> */}
           </div>
           <div className="bg-gray-100 p-4 flex justify-end">
-            <button
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 mr-2 rounded"
-              onClick={() =>
-                handleStatusToggle(
-                  "change",
-                  booking.houseId,
-                  booking.booking.bookingId,
-                  booking.booking.totalPrice.toFixed(2),
-                  booking.booking.uid,
-                  booking.booking.checkIn,
-                  booking.settings,
-                  booking.hostId
-                )
-              }
-            >
-              Change
-            </button>
             <button
               className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded"
               onClick={() =>

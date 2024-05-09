@@ -80,7 +80,7 @@ const Home = () => {
   }, [calculateDistance, houseData, mapCenter]);
 
   return (
-    <div className={`font-didact bg-secondary text-accent2 h-[91.5vh]`}>
+    <div className={`font-didact bg-secondary text-accent2 min-h-[91.5vh]`}>
       {view === "list" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
           {houseData &&

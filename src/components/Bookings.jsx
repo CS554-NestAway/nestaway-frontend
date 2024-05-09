@@ -37,11 +37,33 @@ export default function Bookings() {
   }, [currentUser]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <>
+        <div className="flex justify-center items-center h-screen">
+          <div className="w-12 h-12 border-t-4 border-r-4 border-b-4 border-l-4 border-gray-900 animate-spin"></div>
+        </div>
+        <button
+          className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
+          onClick={() => history.back()}
+        >
+          Go Back
+        </button>
+      </>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <>
+        <p>{error}</p>
+        <button
+          className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
+          onClick={() => history.back()}
+        >
+          Go Back
+        </button>
+      </>
+    );
   }
 
   if (!currentUser) {

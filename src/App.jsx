@@ -16,9 +16,12 @@ import PaymentSuccessful from "./components/PaymentSuccessful";
 import Admin from "./components/Admin";
 import Bookings from "./components/Bookings";
 import Trips from "./components/Trips";
+import NotFound from "./components/NotFound";
+import { useSelector } from "react-redux";
 
 const App = () => {
   const { currentUser } = useContext(AuthContext);
+  const currentUserRedux = useSelector((state) => state.auth.currentUser);
   return (
     <ThemeProvider>
       <NotificationProvider>
@@ -26,16 +29,22 @@ const App = () => {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/host" element={<Host />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/house/:id" element={<ListingDetail />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/account" element={<UserAccount />} />
-            <Route path="/payment" element={<PaymentGateway />} />
-            <Route path="/paymentSuccessful" element={<PaymentSuccessful />} />
-            <Route path="/bookings" element={<Bookings />} />
-            <Route path="/trips" element={<Trips />} />
+            {currentUser && (
+              <>
+                <Route path="/host" element={<Host />} />
+                {currentUserRedux.isAdmin && (
+                  <Route path="/admin" element={<Admin />} />
+                )}
+                <Route path="/account" element={<UserAccount />} />
+                <Route path="/payment" element={<PaymentGateway />} />
+                <Route path="/bookings" element={<Bookings />} />
+                <Route path="/trips" element={<Trips />} />
+              </>
+            )}
+            <Route path="/house/:id" element={<ListingDetail />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </NotificationProvider>

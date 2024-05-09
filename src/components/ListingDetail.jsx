@@ -30,8 +30,6 @@ import {
   WifiHigh,
   Wind,
 } from "@phosphor-icons/react";
-import moment from "moment";
-import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
@@ -95,28 +93,26 @@ const ListingDetail = () => {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    // console.log(bookingForm);
-    // Add your booking Navigation here
     return navigateTo("/payment", { state: { bookingForm } });
   };
   if (!houseDetails) {
-    return <div>Loading...</div>; // Add a loading state if data is not yet available
+    return (
+      <>
+        <div className="flex justify-center items-center h-screen">
+          <div className="w-12 h-12 border-t-4 border-r-4 border-b-4 border-l-4 border-gray-900 animate-spin"></div>
+        </div>
+        <button
+          className={`text-accent1 rounded-lg ml-auto px-2 py-2 bg-primary hover:bg-action`}
+          onClick={() => history.back()}
+        >
+          Go Back
+        </button>
+      </>
+    );
   }
 
-  const {
-    houseType,
-    address,
-    features,
-    amenities,
-    rules,
-    settings,
-    photos,
-    title,
-    description,
-    price,
-    currency,
-    averageRating,
-  } = houseDetails;
+  const { houseType, address, features, amenities, rules, settings } =
+    houseDetails;
 
   return (
     <div className="flex flex-col text-accent2 bg-accent1 overflow-y-auto py-6 px-24 font-didact">
