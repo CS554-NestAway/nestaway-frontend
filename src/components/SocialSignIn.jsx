@@ -2,6 +2,7 @@ import { GoogleLogo } from "@phosphor-icons/react";
 import { doSocialSignIn } from "../firebase/FirebaseFunctions";
 import { checkIfAdminAsync } from "../store/authSlice";
 import { useDispatch } from "react-redux";
+import { SendEmailURL } from "../api";
 
 const BaseURL = import.meta.env.VITE_BASE_URL;
 const SocialSignIn = () => {
@@ -17,7 +18,7 @@ const SocialSignIn = () => {
   };
   const sendSignUpEmail = async (email, displayName) => {
     try {
-      const response = await fetch(BaseURL + "/sendemail/accemail", {
+      const response = await fetch(BaseURL + SendEmailURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
