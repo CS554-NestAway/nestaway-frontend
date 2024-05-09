@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const { currentUser } = useContext(AuthContext);
-  const currentUserRedux = useSelector((state) => state.auth.currentUser);
+  const auth = useSelector((state) => state.auth);
   return (
     <ThemeProvider>
       <NotificationProvider>
@@ -34,15 +34,16 @@ const App = () => {
             {currentUser && (
               <>
                 <Route path="/host" element={<Host />} />
-                {currentUserRedux.isAdmin && (
-                  <Route path="/admin" element={<Admin />} />
-                )}
                 <Route path="/account" element={<UserAccount />} />
                 <Route path="/payment" element={<PaymentGateway />} />
+                {auth && auth?.isAdmin && (
+                  <Route path="/admin" element={<Admin />} />
+                )}
                 <Route path="/bookings" element={<Bookings />} />
                 <Route path="/trips" element={<Trips />} />
               </>
             )}
+
             <Route path="/house/:id" element={<ListingDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
