@@ -12,6 +12,7 @@ import {
   reauthenticateWithCredential,
 } from "firebase/auth";
 import api, { NewUserURL } from "../api";
+import axios from "axios";
 
 async function doCreateUserWithEmailAndPassword(email, password, displayName) {
   const auth = getAuth();
@@ -37,8 +38,9 @@ async function doCreateUserWithEmailAndPassword(email, password, displayName) {
     return;
   }
 
+  const BaseURL = import.meta.env.VITE_BASE_URL;
   try {
-    await api.post(NewUserURL, {
+    await axios.post(BaseURL + NewUserURL, {
       name: displayName,
       email: user.email,
     });

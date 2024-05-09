@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api, { GetHouses, HostURL } from "../api";
+import axios from "axios";
 
+const BaseURL = import.meta.env.VITE_BASE_URL;
 const initialState = {
   houseData: [],
   query: {
@@ -71,10 +73,17 @@ export const { setQuery, setMapCenter, setIsDrag, clearFilter } =
 export const fetchHouses = createAsyncThunk(
   "fetchHouses",
   async (_, { getState }) => {
-    let houseData = [];
+    let houseData = [],
+      headers = {};
     const { query } = getState().houses;
-    await api
-      .post(GetHouses, query)
+    const { currentUser } = getState().auth;
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
+    await axios
+      .post(BaseURL + GetHouses, query, { headers })
       .then((response) => {
         houseData = response.data;
       })
@@ -88,10 +97,17 @@ export const fetchHouses = createAsyncThunk(
 export const searchHousesByState = createAsyncThunk(
   "searchHousesByState",
   async (_, { getState }) => {
-    let houseData = [];
+    let houseData = [],
+      headers = {};
     const { query } = getState().houses;
-    await api
-      .post(GetHouses, query)
+    const { currentUser } = getState().auth;
+    if (currentUser) {
+      headers = {
+        Authorization: `Bearer ${currentUser.accessToken}`,
+      };
+    }
+    await axios
+      .post(BaseURL + GetHouses, query, { headers })
       .then((response) => {
         houseData = response.data;
       })

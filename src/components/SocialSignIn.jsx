@@ -1,10 +1,14 @@
 import { GoogleLogo } from "@phosphor-icons/react";
 import { doSocialSignIn } from "../firebase/FirebaseFunctions";
+import { checkIfAdminAsync } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 const SocialSignIn = () => {
+  const dispatch = useDispatch();
   const socialSignOn = async () => {
     try {
       await doSocialSignIn();
+      dispatch(checkIfAdminAsync());
     } catch (error) {
       alert(error);
     }
