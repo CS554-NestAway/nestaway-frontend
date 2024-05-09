@@ -127,6 +127,7 @@ const Geoview = ({ data }) => {
 
       <MarkerClusterGroup chunkedLoading>
         {data &&
+          Array.isArray(data) &&
           data.map((house) => (
             <Marker
               key={house._id}
