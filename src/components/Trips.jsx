@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from 'react'
 import api, { TripURL, CreditsURL, BookingURL } from '../api'
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+const BaseURL = import.meta.env.VITE_BASE_URL;
 export default function Bookings() {
     const navigateTo = useNavigate();
     const { currentUser } = useContext(AuthContext);
@@ -11,7 +13,19 @@ export default function Bookings() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const tripsResponse = await api.get(TripURL);
+                let headers = {};
+                if (currentUser) {
+                    headers = {
+                        Authorization: `Bearer ${currentUser.accessToken}`,
+                    };
+                }
+                const tripsResponse = await axios.get(
+                    BaseURL + TripURL,
+                    {
+                        headers,
+                    }
+                );
+                //const tripsResponse = await api.get(TripURL);
                 //console.log(tripsResponse.data.data);
                 setTripsInfo(tripsResponse.data.data);
                 setLoading(false);
@@ -33,31 +47,73 @@ export default function Bookings() {
     if (!currentUser) {
         return navigateTo("/");
     }
-    if (tripsInfo.length == 0) {
+    if (tripsInfo.length === 0) {
         return <p>You don't have any trips</p>
     }
 
     const handleStatusToggle = async (status, houseId, bookingId, totalPrice, userId, checkIn, settings, hostId) => {
-        const { data } = await api.post(BookingURL + 'toggleStatus', {
-            houseId: houseId,
-            bookingId: bookingId,
-            status: 'cancel'
-        });
+        let headers = {};
+        if (currentUser) {
+            headers = {
+                Authorization: `Bearer ${currentUser.accessToken}`,
+            };
+        }
+        const { data } = await axios.post(
+            BaseURL + BookingURL + 'toggleStatus',
+            {
+                houseId: houseId,
+                bookingId: bookingId,
+                status: 'cancel'
+            },
+            {
+                headers,
+            }
+        );
+        // const { data } = await api.post(BookingURL + 'toggleStatus', {
+        //     houseId: houseId,
+        //     bookingId: bookingId,
+        //     status: 'cancel'
+        // });
         totalPrice = Number(totalPrice);
         const differenceInTime =
             new Date(checkIn).getTime() - new Date().getTime();
         const differenceInDays = differenceInTime / (1000 * 3600 * 24);
         const numberOfDays = Math.round(differenceInDays);
         if (data.success && numberOfDays > settings.cancellationDays) {
-            const returnCreditsResponse = await api.post(CreditsURL + 'returnCredits', {
-                userId: userId,
-                creditsToAdd: totalPrice
-            });
+            const returnCreditsResponse = await axios.post(
+                BaseURL + CreditsURL + 'returnCredits',
+                {
+                    userId: userId,
+                    creditsToAdd: totalPrice
+                },
+                {
+                    headers,
+                }
+            );
+            // const returnCreditsResponse = await api.post(CreditsURL + 'returnCredits', {
+            //     userId: userId,
+            //     creditsToAdd: totalPrice
+            // });
             if (returnCreditsResponse) {
                 const fetchData = async () => {
-                    const tripsResponse = await api.get(TripURL);
-                    setTripsInfo(tripsResponse.data.data);
-                    setLoading(false);
+                    try {
+                        let headers = {};
+                        if (currentUser) {
+                            headers = {
+                                Authorization: `Bearer ${currentUser.accessToken}`,
+                            };
+                        }
+                        const tripsResponse = await axios.get(
+                            BaseURL + TripURL,
+                            {
+                                headers,
+                            }
+                        );
+                        setTripsInfo(tripsResponse.data.data);
+                        setLoading(false);
+                    } catch (e) {
+                        setError(e);
+                    }
                 }
                 await fetchData();
             }
@@ -73,9 +129,24 @@ export default function Bookings() {
             });
             if (deductCreditsResponse && returnCreditsResponse) {
                 const fetchData = async () => {
-                    const tripsResponse = await api.get(TripURL);
-                    setTripsInfo(tripsResponse.data.data);
-                    setLoading(false);
+                    try {
+                        let headers = {};
+                        if (currentUser) {
+                            headers = {
+                                Authorization: `Bearer ${currentUser.accessToken}`,
+                            };
+                        }
+                        const tripsResponse = await axios.get(
+                            BaseURL + TripURL,
+                            {
+                                headers,
+                            }
+                        );
+                        setTripsInfo(tripsResponse.data.data);
+                        setLoading(false);
+                    } catch (e) {
+                        setError(e);
+                    }
                 }
                 await fetchData();
             }
